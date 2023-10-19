@@ -31,3 +31,41 @@ Install [Dune](https://dune.readthedocs.io/en/latest/quick-start.html), the OCam
 $ opam install dune
 ```
 
+## Building reversi
+
+To build the project, type:
+
+```
+$ dune build
+```
+
+For continuous build, use
+
+```
+$ dune build --watch
+```
+
+instead.
+
+## Running reversi
+
+To run the project, type:
+
+```
+$ dune exec omizer2mizer
+```
+
+## Testing reversi
+
+To test the project, type:
+
+```
+$ dune runtest
+```
+
+This can be combined with continuous build & test, using
+
+```
+$ dune runtest --watch
+```
+

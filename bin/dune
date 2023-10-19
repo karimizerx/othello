@@ -1,0 +1,4 @@
+(executable
+ (public_name omizer2mizer)
+ (name main)
+ (libraries omizer2mizer))

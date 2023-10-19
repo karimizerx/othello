@@ -25,3 +25,9 @@ $ opam switch create .
 $ eval $(opam env)
 ```
 
+Install [Dune](https://dune.readthedocs.io/en/latest/quick-start.html), the OCaml build system, using Opam:
+
+```
+$ opam install dune
+```
+

@@ -1,4 +1,4 @@
-type player
+type player = X | O
 type xpos = X of int
 type ypos = Y of int
 type pos = xpos * ypos

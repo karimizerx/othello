@@ -1,2 +1,3 @@
 (test
- (name omizer2mizer))
+ (name test_engine)
+ (libraries omizer2mizer alcotest qcheck qcheck-alcotest))

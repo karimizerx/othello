@@ -14,7 +14,7 @@ let pp_player oc (p : player) =
   match p with X -> Format.fprintf oc "X" | _ -> Format.fprintf oc "O"
 
 let pp_xpos oc n = match n with X i -> Format.fprintf oc "Pos.(x %d)" i
-let pp_xpos oc n = match n with Y i -> Format.fprintf oc "Pos.(y %d)" i
+let pp_ypos oc n = match n with Y i -> Format.fprintf oc "Pos.(y %d)" i
 
 let equal_xpos a b =
   ignore (a, b);

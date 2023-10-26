@@ -11,9 +11,17 @@ end
 
 (* Pretty printers *)
 
-let equal_xpos a b = ignore (a, b); true
-let equal_ypos a b = ignore (a, b); true
-let equal_pos a b = ignore (a, b); true
+let equal_xpos a b =
+  ignore (a, b);
+  true
+
+let equal_ypos a b =
+  ignore (a, b);
+  true
+
+let equal_pos a b =
+  ignore (a, b);
+  true
 
 exception Invalid_xpos
 exception Invalid_ypos

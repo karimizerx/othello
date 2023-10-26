@@ -1,4 +1,4 @@
-type player
+type player = X | O
 type xpos = X of int
 type ypos = Y of int
 type pos = xpos * ypos
@@ -10,10 +10,23 @@ module Pos = struct
 end
 
 (* Pretty printers *)
+let pp_player oc (p : player) =
+  match p with X -> Format.fprintf oc "X" | _ -> Format.fprintf oc "O"
 
-let equal_xpos a b = ignore (a, b); true
-let equal_ypos a b = ignore (a, b); true
-let equal_pos a b = ignore (a, b); true
+let pp_xpos oc n = match n with X i -> Format.fprintf oc "Pos.(x %d)" i
+let pp_xpos oc n = match n with Y i -> Format.fprintf oc "Pos.(y %d)" i
+
+let equal_xpos a b =
+  ignore (a, b);
+  true
+
+let equal_ypos a b =
+  ignore (a, b);
+  true
+
+let equal_pos a b =
+  ignore (a, b);
+  true
 
 exception Invalid_xpos
 exception Invalid_ypos

@@ -10,7 +10,9 @@ module Pos : sig
 end
 
 (* Pretty printers *)
-
+val pp_player : Format.formatter -> player -> unit
+val pp_xpos : Format.formatter -> xpos -> unit
+val pp_ypos : Format.formatter -> ypos -> unit
 val equal_xpos : xpos -> xpos -> bool
 val equal_ypos : ypos -> ypos -> bool
 val equal_pos : pos -> pos -> bool

@@ -1,4 +1,3 @@
 (test
- (name engine)
- (modules engine)
- (libraries alcotest qcheck qcheck-alcotest))
+ (name test_engine)
+ (libraries omizer2mizer alcotest))

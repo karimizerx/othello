@@ -1,26 +1,38 @@
 type player = X | O
-type xpos = X of int
-type ypos = Y of int
-type pos = xpos * ypos
+type hpos = H of int
+type vpos = V of int
+type pos = hpos * vpos
 type board = player option list list
 
 module Pos = struct
-  let x i = X i
-  let y i = Y i
+  let h i = H i
+  let v i = V i
 end
 
 (* Pretty printers *)
 let pp_player oc (p : player) =
   match p with X -> Format.fprintf oc "X" | _ -> Format.fprintf oc "O"
 
-let pp_xpos oc n = match n with X i -> Format.fprintf oc "Pos.(x %d)" i
-let pp_ypos oc n = match n with Y i -> Format.fprintf oc "Pos.(y %d)" i
+let pp_hpos fmt n = match n with H i -> Format.fprintf fmt "Pos.(h %d)" i
+let pp_vpos fmt n = match n with V i -> Format.fprintf fmt "Pos.(v %d)" i
 
-let equal_xpos a b =
+let pp_board fmt board =
+  List.iter
+    (fun x ->
+      List.iter
+        (fun y ->
+          match y with
+          | None -> Format.fprintf fmt "•"
+          | Some p -> Format.fprintf fmt "%a" pp_player p)
+        x;
+      Format.fprintf fmt "@\n")
+    board
+
+let equal_hpos a b =
   ignore (a, b);
   true
 
-let equal_ypos a b =
+let equal_vpos a b =
   ignore (a, b);
   true
 

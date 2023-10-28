@@ -10,16 +10,44 @@ module Pos = struct
 end
 
 (* Pretty printers *)
-let pp_player oc (p : player) =
-  match p with X -> Format.fprintf oc "X" | _ -> Format.fprintf oc "O"
+let pp_player fmt (p : player option) =
+  match p with
+  | None -> Format.fprintf fmt "•"
+  | Some X -> Format.fprintf fmt "X"
+  | _ -> Format.fprintf fmt "O"
 
-let pp_hpos oc n = match n with H i -> Format.fprintf oc "Pos.(h %d)" i
-let pp_vpos oc n = match n with V i -> Format.fprintf oc "Pos.(v %d)" i
 let equal_hpos (H i) (H j) = i = j
 let equal_vpos (V i) (V j) = i = j
 
 let equal_pos ((x1, y1) : pos) ((x2, y2) : pos) =
   equal_hpos x1 x2 && equal_vpos y1 y2
+
+let equal_player p1 p2 =
+  match (p1, p2) with
+  | None, None -> true
+  | Some X, Some X -> true
+  | Some O, Some O -> true
+  | _, _ -> false
+
+let rec equal_list_player (l1 : player option list) (l2 : player option list) =
+  match (l1, l2) with
+  | [], [] -> true
+  | _, [] -> false
+  | [], _ -> false
+  | h1 :: t1, h2 :: t2 -> equal_player h1 h2 && equal_list_player t1 t2
+
+let equal_board (b : board) (b1 : board) =
+  equal_list_player (List.flatten b) (List.flatten b1)
+
+let pp_hpos fmt n = match n with H i -> Format.fprintf fmt "Pos.(h %d)" i
+let pp_vpos fmt n = match n with V i -> Format.fprintf fmt "Pos.(v %d)" i
+
+let pp_board fmt board =
+  List.iter
+    (fun x ->
+      List.iter (fun y -> Format.fprintf fmt "%a" pp_player y) x;
+      Format.fprintf fmt "@\n")
+    board
 
 exception Invalid_xpos
 exception Invalid_ypos
@@ -39,13 +67,17 @@ let new_board : board =
   in
   init (l @ [ centers ] @ [ List.rev centers ] @ l)
 
-let get b p =
-  ignore (b, p);
-  None
+let get b = function H h, V v -> List.nth (List.nth b h) v
 
-let set b p pl =
-  ignore (b, p, pl);
-  []
+let set b po pl =
+  match po with
+  | H h, V v ->
+      List.mapi
+        (fun i line ->
+          if i = h then
+            List.mapi (fun j el -> if j = v then Some pl else el) line
+          else line)
+        b
 
 module Verif = struct
   let win b p =

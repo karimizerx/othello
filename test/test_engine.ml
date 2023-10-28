@@ -1,7 +1,9 @@
 open Omizer2mizer.Engine
 
+let player = Alcotest.testable pp_player equal_player
 let hpos = Alcotest.testable pp_hpos equal_hpos
 let vpos = Alcotest.testable pp_vpos equal_vpos
+let board = Alcotest.testable pp_board equal_board
 
 let b =
   [
@@ -27,6 +29,44 @@ let b2 =
     [ None; None; None; None; None; None; None; None ];
   ]
 
+let b3 =
+  [
+    [ Some O; Some X; None; None; Some X; Some X; None; None ];
+    [ Some O; None; Some O; Some X; Some O; None; Some O; Some X ];
+    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
+    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
+    [ Some X; Some X; None; None; Some X; Some X; None; None ];
+    [ Some O; None; Some O; Some X; Some O; None; Some O; Some X ];
+    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
+    [ Some X; Some O; Some O; None; Some X; Some O; Some O; Some O ];
+  ]
+
+(* Case :  Only [X]'s mark *)
+let bX =
+  [
+    [ Some X; Some X; None; None; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; None; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; None; Some X ];
+  ]
+
+(* Case :  No solution for player [O] *)
+let bNSO =
+  [
+    [ Some X; Some X; None; None; Some X; Some X; None; None ];
+    [ Some X; Some O; None; None; Some X; Some X; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
 let test_pp_player1 =
   let result = Format.asprintf "%a" pp_player (Some O) in
   Alcotest.test_case "pp_player" `Quick (fun () ->
@@ -47,6 +87,20 @@ let test_pp_vpos =
   Alcotest.test_case "pp_vpos" `Quick (fun () ->
       Alcotest.(check string) "same result" "Pos.(v 7)" result)
 
+let test_pp_pos =
+  let result = Format.asprintf "%a" pp_pos (Pos.h 7, Pos.v 3) in
+  Alcotest.test_case "pp_pos" `Quick (fun () ->
+      Alcotest.(check string) "same result" "(7,3)" result)
+
+let test_pp_poslist =
+  let result =
+    Format.asprintf "%a" pp_poslist
+      [ (Pos.h 0, Pos.v 0); (Pos.h 1, Pos.v 4); (Pos.h 5, Pos.v 7) ]
+  in
+  let desired = "(0,0) (1,4) (5,7) " in
+  Alcotest.test_case "pp_poslist" `Quick (fun () ->
+      Alcotest.(check string) "same result" desired result)
+
 let test_pp_board =
   let result = Format.asprintf "%a" pp_board b in
   let desired =
@@ -63,33 +117,36 @@ let test_pp_board =
       Alcotest.(check string) "same result" desired result)
 
 let test_set =
-  let setter1 = set b (Pos.h 0, Pos.v 0) (O : player) in
-  let setter2 = set setter1 (Pos.h 7, Pos.v 7) (O : player) in
-  let result = Format.asprintf "%a" pp_board setter2 in
-  let desired =
-    "OX••XX••\n\
-     O•OXO•OX\n\
-     XOO•XOO•\n\
-     XOO•XOO•\n\
-     XX••XX••\n\
-     O•OXO•OX\n\
-     XOO•XOO•\n\
-     XOO•XOOO\n"
-  in
+  let set1 = set b (Pos.h 0, Pos.v 0) (O : player) in
+  let result = set set1 (Pos.h 7, Pos.v 7) (O : player) in
+  let desired = b3 in
   Alcotest.test_case "set" `Quick (fun () ->
-      Alcotest.(check string) "same result" desired result)
+      Alcotest.(check board) "same result" desired result)
 
-let test_get1 =
-  let getter = get b (Pos.h 0, Pos.v 0) in
-  let result = Format.asprintf "%a" pp_player getter in
+let test_get =
+  let result =
+    [
+      get b (Pos.h 0, Pos.v 0);
+      get b (Pos.h 3, Pos.v 1);
+      get b (Pos.h 6, Pos.v 7);
+    ]
+  in
+  let desired = [ Some X; Some O; None ] in
   Alcotest.test_case "get" `Quick (fun () ->
-      Alcotest.(check string) "same result" "X" result)
+      Alcotest.(check (list player)) "same result" desired result)
 
-let test_get2 =
-  let getter = get b (Pos.h 7, Pos.v 7) in
-  let result = Format.asprintf "%a" pp_player getter in
-  Alcotest.test_case "get" `Quick (fun () ->
-      Alcotest.(check string) "same result" "•" result)
+let test_free_pos =
+  let result = free_pos bX in
+  let desired =
+    [
+      (Pos.h 0, Pos.v 2);
+      (Pos.h 0, Pos.v 3);
+      (Pos.h 1, Pos.v 3);
+      (Pos.h 7, Pos.v 6);
+    ]
+  in
+  Alcotest.test_case "free_pos" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
 let test_move1 =
   let desired =
@@ -143,6 +200,24 @@ let test_move6 =
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
+let test_can_play1 =
+  let open Verif in
+  let result = can_play b O in
+  Alcotest.test_case "can_play" `Quick (fun () ->
+      Alcotest.(check bool) "same result" true result)
+
+let test_can_play2 =
+  let open Verif in
+  let result = can_play bX O in
+  Alcotest.test_case "can_play" `Quick (fun () ->
+      Alcotest.(check bool) "same result" false result)
+
+let test_can_play3 =
+  let open Verif in
+  let result = can_play bNSO O in
+  Alcotest.test_case "can_play" `Quick (fun () ->
+      Alcotest.(check bool) "same result" true result)
+
 let () =
   let open Alcotest in
   run "Engine"
@@ -154,8 +229,11 @@ let () =
           test_pp_hpos;
           test_pp_vpos;
           test_pp_board;
+          test_pp_pos;
+          test_pp_poslist;
         ] );
-      ("get & set", [ test_set; test_get1; test_get2 ]);
+      ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
+      ("can_play", [ test_can_play1; test_can_play2; test_can_play3 ]);
       ( "move",
         [
           test_move1; test_move2; test_move3; test_move4; test_move5; test_move6;

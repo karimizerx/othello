@@ -1,5 +1,8 @@
 open Omizer2mizer.Engine
 
+let hpos = Alcotest.testable pp_hpos equal_hpos
+let vpos = Alcotest.testable pp_vpos equal_vpos
+
 let b =
   [
     [ Some X; Some X; None; None; Some X; Some X; None; None ];
@@ -10,6 +13,18 @@ let b =
     [ Some O; None; Some O; Some X; Some O; None; Some O; Some X ];
     [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
     [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
+  ]
+
+let b2 =
+  [
+    [ None; None; None; None; None; None; None; Some X ];
+    [ None; None; None; Some O; None; None; Some X; None ];
+    [ None; None; None; Some O; None; Some X; None; None ];
+    [ None; None; None; Some O; Some X; None; None; None ];
+    [ None; None; None; Some X; Some O; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
   ]
 
 let test_pp_player1 =
@@ -76,6 +91,58 @@ let test_get2 =
   Alcotest.test_case "get" `Quick (fun () ->
       Alcotest.(check string) "same result" "•" result)
 
+let test_move1 =
+  let desired =
+    [
+      (Pos.h 1, Pos.v 1);
+      (Pos.h 1, Pos.v 2);
+      (Pos.h 2, Pos.v 1);
+      (Pos.h 3, Pos.v 1);
+    ]
+  in
+  let result = Verif.move b (Some X) (Pos.h 1, Pos.v 1) in
+  Alcotest.test_case "move" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move2 =
+  let desired = [ (Pos.h 0, Pos.v 7) ] in
+  let result = Verif.move b (Some X) (Pos.h 0, Pos.v 7) in
+  Alcotest.test_case "move" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move3 =
+  let desired =
+    [ (Pos.h 7, Pos.v 7); (Pos.h 7, Pos.v 6); (Pos.h 7, Pos.v 5) ]
+  in
+  let result = Verif.move b (Some X) (Pos.h 7, Pos.v 7) in
+  Alcotest.test_case "move" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move4 =
+  let desired = [ (Pos.h 5, Pos.v 6) ] in
+  let result = Verif.move b (Some O) (Pos.h 5, Pos.v 6) in
+  Alcotest.test_case "move" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move5 =
+  let desired = [ (Pos.h 5, Pos.v 2) ] in
+  let result = Verif.move b2 (Some O) (Pos.h 5, Pos.v 2) in
+  Alcotest.test_case "move" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move6 =
+  let desired =
+    [
+      (Pos.h 0, Pos.v 3);
+      (Pos.h 1, Pos.v 3);
+      (Pos.h 2, Pos.v 3);
+      (Pos.h 3, Pos.v 3);
+    ]
+  in
+  let result = Verif.move b2 (Some X) (Pos.h 0, Pos.v 3) in
+  Alcotest.test_case "move" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
 let () =
   let open Alcotest in
   run "Engine"
@@ -89,4 +156,8 @@ let () =
           test_pp_board;
         ] );
       ("get & set", [ test_set; test_get1; test_get2 ]);
+      ( "move",
+        [
+          test_move1; test_move2; test_move3; test_move4; test_move5; test_move6;
+        ] );
     ]

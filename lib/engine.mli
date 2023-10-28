@@ -32,6 +32,8 @@ val set : board -> pos -> player -> board
 
 module Verif : sig
   val win : board -> player -> bool
-  val move : board -> player -> pos -> bool
+
+  (*move returns all the positions to set with player, no check whether if the origin position is empty and on the board*)
+  val move : board -> player option -> pos -> pos list
   val can_play : board -> player -> bool
 end

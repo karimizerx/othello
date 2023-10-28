@@ -10,8 +10,11 @@ module Pos = struct
 end
 
 (* Pretty printers *)
-let pp_player oc (p : player) =
-  match p with X -> Format.fprintf oc "X" | _ -> Format.fprintf oc "O"
+let pp_player fmt (p : player option) =
+  match p with
+  | None -> Format.fprintf fmt "•"
+  | Some X -> Format.fprintf fmt "X"
+  | _ -> Format.fprintf fmt "O"
 
 let pp_hpos fmt n = match n with H i -> Format.fprintf fmt "Pos.(h %d)" i
 let pp_vpos fmt n = match n with V i -> Format.fprintf fmt "Pos.(v %d)" i
@@ -19,12 +22,7 @@ let pp_vpos fmt n = match n with V i -> Format.fprintf fmt "Pos.(v %d)" i
 let pp_board fmt board =
   List.iter
     (fun x ->
-      List.iter
-        (fun y ->
-          match y with
-          | None -> Format.fprintf fmt "•"
-          | Some p -> Format.fprintf fmt "%a" pp_player p)
-        x;
+      List.iter (fun y -> Format.fprintf fmt "%a" pp_player y) x;
       Format.fprintf fmt "@\n")
     board
 
@@ -45,14 +43,17 @@ exception Invalid_ypos
 exception Invalid_move
 
 let init () = []
+let get b = function H h, V v -> List.nth (List.nth b h) v
 
-let get b p =
-  ignore (b, p);
-  None
-
-let set b p pl =
-  ignore (b, p, pl);
-  []
+let set b po pl =
+  match po with
+  | H h, V v ->
+      List.mapi
+        (fun i line ->
+          if i = h then
+            List.mapi (fun j el -> if j = v then Some pl else el) line
+          else line)
+        b
 
 module Verif = struct
   let win b p =

@@ -73,12 +73,19 @@ let free_pos b : pos list =
     (fun pos -> match get b pos with None -> true | _ -> false)
     listofpos
 
+let swap_player = function X -> O | O -> X
+let swap_player_opt = function None -> None | Some p -> Some (swap_player p)
+
 module Verif = struct
   let win b p =
-    ignore (b, p);
-    true
-
-  let swap_player = function None -> None | Some X -> Some O | _ -> Some X
+    let flatt_b = List.flatten b in
+    (* Count player's points *)
+    let cnt_points p =
+      List.fold_left
+        (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
+        0 flatt_b
+    in
+    cnt_points p > cnt_points (swap_player p)
 
   let not_border_dir ((H h, V v) : pos) dir =
     match dir with
@@ -124,18 +131,19 @@ module Verif = struct
       (*reached end of board before reaching an opponent*)
     else if equal_pos next_pos (H (-2), V (-2)) then
       (*reached an empty square or an opponent*)
-      if get board (not_border_dir pos dir) = swap_player player then res
+      if get board (not_border_dir pos dir) = swap_player_opt player then res
       else []
     else same_player_line board player next_pos dir (res @ [ next_pos ])
 
   (*returns all the positions we need to set after a move by player, from pos in dir*)
   let move_dir board player pos dir =
-    let next_pos = next_pos_player board (swap_player player) pos dir in
+    let next_pos = next_pos_player board (swap_player_opt player) pos dir in
     if equal_pos next_pos (H (-1), V (-1)) then []
       (*first next pos is out of board*)
     else if equal_pos next_pos (H (-2), V (-2)) then []
       (*first next pos contains same player as pos, or no player*)
-    else same_player_line board (swap_player player) next_pos dir [ next_pos ]
+    else
+      same_player_line board (swap_player_opt player) next_pos dir [ next_pos ]
 
   let move (b : board) pl pos =
     let rec move_in b pl pos dir l_pos =

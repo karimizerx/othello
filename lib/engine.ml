@@ -73,10 +73,18 @@ let free_pos b : pos list =
     (fun pos -> match get b pos with None -> true | _ -> false)
     listofpos
 
+let other_player = function X -> O | O -> X
+
 module Verif = struct
   let win b p =
-    ignore (b, p);
-    true
+    let flatt_b = List.flatten b in
+    (* Count player's points *)
+    let count_player p =
+      List.fold_left
+        (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
+        0 flatt_b
+    in
+    count_player p > count_player (other_player p)
 
   let swap_player = function None -> None | Some X -> Some O | _ -> Some X
 

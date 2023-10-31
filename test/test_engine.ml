@@ -67,6 +67,18 @@ let bNSO =
     [ None; None; None; None; None; None; None; None ];
   ]
 
+let beq =
+  [
+    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
+    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
+    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
+    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
+    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
+    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
+    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
+    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
+  ]
+
 let test_pp_player1 =
   let result = Format.asprintf "%a" pp_player (Some O) in
   Alcotest.test_case "pp_player" `Quick (fun () ->
@@ -147,6 +159,24 @@ let test_free_pos =
   in
   Alcotest.test_case "free_pos" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_win_1 =
+  let result = Verif.win bX X in
+  let desired = true in
+  Alcotest.test_case "x win" `Quick (fun () ->
+      Alcotest.(check bool) "same result" desired result)
+
+let test_win_2 =
+  let result = Verif.win beq X in
+  let desired = false in
+  Alcotest.test_case "equality" `Quick (fun () ->
+      Alcotest.(check bool) "same result" desired result)
+
+let test_win_3 =
+  let result = Verif.win b X && Verif.win b O in
+  let desired = false in
+  Alcotest.test_case "winner uniqueness" `Quick (fun () ->
+      Alcotest.(check bool) "same result" desired result)
 
 let test_move1 =
   let desired =
@@ -234,6 +264,7 @@ let () =
         ] );
       ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
       ("can_play", [ test_can_play1; test_can_play2; test_can_play3 ]);
+      ("win", [ test_win_1; test_win_2; test_win_3 ]);
       ( "move",
         [
           test_move1; test_move2; test_move3; test_move4; test_move5; test_move6;

@@ -72,7 +72,6 @@ exception Invalid_hpos
 exception Invalid_vpos
 exception Invalid_move
 
-let init () = []
 let get (b : board) ((H h, V v) : pos) = List.nth (List.nth b h) v
 
 let set (b : board) ((H h, V v) : pos) pl =

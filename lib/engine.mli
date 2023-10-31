@@ -23,7 +23,6 @@ val equal_player : player option -> player option -> bool
 val equal_hpos : hpos -> hpos -> bool
 val equal_vpos : vpos -> vpos -> bool
 val equal_pos : pos -> pos -> bool
-val equal_player : player option -> player option -> bool
 val equal_board : board -> board -> bool
 val equal_list_player : player option list -> player option list -> bool
 

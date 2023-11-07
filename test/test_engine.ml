@@ -17,6 +17,18 @@ let b =
     [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
   ]
 
+let res_new_board =
+  [
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; Some O; Some X; None; None; None ];
+    [ None; None; None; Some X; Some O; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
 let b2 =
   [
     [ None; None; None; None; None; None; None; Some X ];
@@ -127,6 +139,22 @@ let test_pp_board =
   in
   Alcotest.test_case "pp_board" `Quick (fun () ->
       Alcotest.(check string) "same result" desired result)
+
+let test_new_board =
+  Alcotest.test_case "new_board" `Quick (fun () ->
+      Alcotest.(check board) "same result" new_board res_new_board)
+
+let test_equal_hpos =
+  Alcotest.test_case "equal_hpos" `Quick (fun () ->
+      Alcotest.(check bool) "same result" (equal_hpos (H 2) (H 2)) true)
+
+let test_equal_vpos =
+  Alcotest.test_case "equal_vpos" `Quick (fun () ->
+      Alcotest.(check bool) "same result" (equal_vpos (V 2) (V 8)) false)
+
+let test_equal_pos =
+  Alcotest.test_case "equal_pos" `Quick (fun () ->
+      Alcotest.(check bool) "same result" (equal_pos (H 1, V 2) (H 1, V 2)) true)
 
 let test_set =
   let set1 = set b (Pos.h 0, Pos.v 0) (O : player) in
@@ -269,4 +297,6 @@ let () =
         [
           test_move1; test_move2; test_move3; test_move4; test_move5; test_move6;
         ] );
+      ("new_board", [ test_new_board ]);
+      ("equal", [ test_equal_hpos; test_equal_vpos; test_equal_pos ]);
     ]

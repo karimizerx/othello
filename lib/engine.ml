@@ -16,6 +16,29 @@ let pp_player fmt (pl : player option) =
   | Some X -> Format.fprintf fmt "X"
   | _ -> Format.fprintf fmt "O"
 
+let equal_hpos (H i) (H j) = i = j
+let equal_vpos (V i) (V j) = i = j
+
+let equal_pos ((x1, y1) : pos) ((x2, y2) : pos) =
+  equal_hpos x1 x2 && equal_vpos y1 y2
+
+let equal_player p1 p2 =
+  match (p1, p2) with
+  | None, None -> true
+  | Some X, Some X -> true
+  | Some O, Some O -> true
+  | _, _ -> false
+
+let rec equal_list_player (l1 : player option list) (l2 : player option list) =
+  match (l1, l2) with
+  | [], [] -> true
+  | _, [] -> false
+  | [], _ -> false
+  | h1 :: t1, h2 :: t2 -> equal_player h1 h2 && equal_list_player t1 t2
+
+let equal_board (b : board) (b1 : board) =
+  equal_list_player (List.flatten b) (List.flatten b1)
+
 let pp_hpos fmt n = match n with H i -> Format.fprintf fmt "Pos.(h %d)" i
 let pp_vpos fmt n = match n with V i -> Format.fprintf fmt "Pos.(v %d)" i
 let pp_pos fmt po = match po with H i, V j -> Format.fprintf fmt "(%d,%d)" i j
@@ -30,28 +53,24 @@ let pp_board fmt board =
       Format.fprintf fmt "@\n")
     board
 
-let equal_hpos (H h1) (H h2) = h1 = h2
-let equal_vpos (V v1) (V v2) = v1 = v2
+let init b =
+  assert (List.length b = 8);
+  assert (List.for_all (fun line -> List.length line = 8) b);
+  b
 
-let equal_pos ((h1, v1) : pos) ((h2, v2) : pos) =
-  equal_hpos h1 h2 && equal_vpos v1 v2
-
-let equal_player pl1 pl2 =
-  match (pl1, pl2) with
-  | None, None -> true
-  | Some X, Some X -> true
-  | Some O, Some O -> true
-  | _, _ -> false
-
-let equal_board (b1 : board) (b2 : board) =
-  ignore (b1, b2);
-  true
+let new_board : board =
+  let l = List.init 3 (fun _ -> List.init 8 (fun _ -> None)) in
+  let centers =
+    List.init 3 (fun _ -> None)
+    @ [ Some O; Some X ]
+    @ List.init 3 (fun _ -> None)
+  in
+  init (l @ [ centers ] @ [ List.rev centers ] @ l)
 
 exception Invalid_hpos
 exception Invalid_vpos
 exception Invalid_move
 
-let init () = []
 let get (b : board) ((H h, V v) : pos) = List.nth (List.nth b h) v
 
 let set (b : board) ((H h, V v) : pos) pl =

@@ -19,7 +19,7 @@
  (name omizer2mizer)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune (alcotest :with-test))
+ (depends ocaml dune (alcotest :with-test) lwt)
  (tags
   (topics "to describe" your project)))
 

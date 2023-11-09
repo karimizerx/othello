@@ -26,8 +26,6 @@ val equal_pos : pos -> pos -> bool
 val equal_board : board -> board -> bool
 val equal_list_player : player option list -> player option list -> bool
 
-
-
 (* Exceptions *)
 exception Invalid_hpos
 exception Invalid_vpos

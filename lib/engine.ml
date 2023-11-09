@@ -27,7 +27,7 @@ let equal_player p1 p2 =
   | None, None -> true
   | Some X, Some X -> true
   | Some O, Some O -> true
-  | _, _ -> false
+  | _, _ -> failwith "NYI"
 
 let rec equal_list_player (l1 : player option list) (l2 : player option list) =
   match (l1, l2) with
@@ -39,18 +39,40 @@ let rec equal_list_player (l1 : player option list) (l2 : player option list) =
 let equal_board (b : board) (b1 : board) =
   equal_list_player (List.flatten b) (List.flatten b1)
 
-let pp_hpos fmt n = match n with H i -> Format.fprintf fmt "Pos.(h %d)" i
-let pp_vpos fmt n = match n with V i -> Format.fprintf fmt "Pos.(v %d)" i
-let pp_pos fmt po = match po with H i, V j -> Format.fprintf fmt "(%d,%d)" i j
+let pp_hpos fmt n =
+  match n with
+  | H i -> Format.fprintf fmt "%c" (char_of_int (i + int_of_char 'A'))
+
+let pp_vpos fmt n = match n with V i -> Format.fprintf fmt "%d" i
+let pp_pos fmt ((h, v) : pos) = Format.fprintf fmt "%a%a" pp_hpos h pp_vpos v
 
 let pp_poslist fmt polist =
   List.iter (fun y -> Format.fprintf fmt "%a " pp_pos y) polist
 
 let pp_board fmt board =
-  List.iter
-    (fun x ->
-      List.iter (fun y -> Format.fprintf fmt "%a" pp_player y) x;
-      Format.fprintf fmt "@\n")
+  List.iteri
+    (fun v x ->
+      if v == 0 then (
+        let l = List.init (List.length board) (fun j -> j) in
+        List.iter
+          (fun i ->
+            Format.fprintf fmt "%s%d   " (if i == 0 then "  ｜ " else "") i)
+          l;
+        Format.fprintf fmt "@,";
+        List.iter
+          (fun i ->
+            Format.fprintf fmt "%s----" (if i == 0 then "-----" else ""))
+          l;
+        Format.fprintf fmt "@,");
+      List.iteri
+        (fun h y ->
+          Format.fprintf fmt "%s%a   "
+            (if h = 0 then
+               (v + int_of_char 'A' |> char_of_int |> String.make 1) ^ " ｜ "
+             else "")
+            pp_player y)
+        x;
+      Format.fprintf fmt "@,  ｜@,")
     board
 
 let init b =
@@ -66,7 +88,6 @@ let new_board : board =
     @ List.init 3 (fun _ -> None)
   in
   init (l @ [ centers ] @ [ List.rev centers ] @ l)
-
 
 exception Invalid_hpos
 exception Invalid_vpos
@@ -93,12 +114,19 @@ let free_pos b : pos list =
     (fun pos -> match get b pos with None -> true | _ -> false)
     listofpos
 
+let swap_player = function X -> O | O -> X
+let swap_player_opt = function None -> None | Some p -> Some (swap_player p)
+
 module Verif = struct
   let win b p =
-    ignore (b, p);
-    true
-
-  let swap_player = function None -> None | Some X -> Some O | _ -> Some X
+    let flatt_b = List.flatten b in
+    (* Count player's points *)
+    let cnt_points p =
+      List.fold_left
+        (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
+        0 flatt_b
+    in
+    cnt_points p > cnt_points (swap_player p)
 
   let not_border_dir ((H h, V v) : pos) dir =
     match dir with
@@ -144,18 +172,19 @@ module Verif = struct
       (*reached end of board before reaching an opponent*)
     else if equal_pos next_pos (H (-2), V (-2)) then
       (*reached an empty square or an opponent*)
-      if get board (not_border_dir pos dir) = swap_player player then res
+      if get board (not_border_dir pos dir) = swap_player_opt player then res
       else []
     else same_player_line board player next_pos dir (res @ [ next_pos ])
 
   (*returns all the positions we need to set after a move by player, from pos in dir*)
   let move_dir board player pos dir =
-    let next_pos = next_pos_player board (swap_player player) pos dir in
+    let next_pos = next_pos_player board (swap_player_opt player) pos dir in
     if equal_pos next_pos (H (-1), V (-1)) then []
       (*first next pos is out of board*)
     else if equal_pos next_pos (H (-2), V (-2)) then []
       (*first next pos contains same player as pos, or no player*)
-    else same_player_line board (swap_player player) next_pos dir [ next_pos ]
+    else
+      same_player_line board (swap_player_opt player) next_pos dir [ next_pos ]
 
   let move (b : board) pl pos =
     let rec move_in b pl pos dir l_pos =

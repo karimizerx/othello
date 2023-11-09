@@ -1,13 +1,10 @@
 open Omizer2mizer.Engine
-open Omizer2mizer.Arena
 
 let player = Alcotest.testable pp_player equal_player
 let hpos = Alcotest.testable pp_hpos equal_hpos
 let vpos = Alcotest.testable pp_vpos equal_vpos
 let board = Alcotest.testable pp_board equal_board
 
-(*let trace = Alcotest.testable pp_trace equal_trace
-  let endplay = Alcotest.testable pp_endplay equal_endplay*)
 let b =
   [
     [ Some X; Some X; None; None; Some X; Some X; None; None ];
@@ -94,9 +91,6 @@ let beq =
     [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
   ]
 
-let trace = [ (H 3, V 2); (H 5, V 6); (H 2, V 3) ]
-let endp = Win X
-
 let test_pp_player1 =
   let result = Format.asprintf "%a" pp_player (Some O) in
   Alcotest.test_case "pp_player" `Quick (fun () ->
@@ -144,18 +138,6 @@ let test_pp_board =
      XOO•XOO•\n"
   in
   Alcotest.test_case "pp_board" `Quick (fun () ->
-      Alcotest.(check string) "same result" desired result)
-
-let test_pp_trace =
-  let result = Format.asprintf "%a" pp_trace trace in
-  let desired = "D2 F6 C3 " in
-  Alcotest.test_case "pp_trace" `Quick (fun () ->
-      Alcotest.(check string) "same result" desired result)
-
-let test_pp_endplay =
-  let result = Format.asprintf "%a" pp_endplay endp in
-  let desired = "X won the game" in
-  Alcotest.test_case "pp_endplay" `Quick (fun () ->
       Alcotest.(check string) "same result" desired result)
 
 let test_new_board =
@@ -307,8 +289,6 @@ let () =
           test_pp_board;
           test_pp_pos;
           test_pp_poslist;
-          test_pp_trace;
-          test_pp_endplay;
         ] );
       ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
       ("can_play", [ test_can_play1; test_can_play2; test_can_play3 ]);

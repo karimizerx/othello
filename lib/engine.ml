@@ -50,10 +50,29 @@ let pp_poslist fmt polist =
   List.iter (fun y -> Format.fprintf fmt "%a " pp_pos y) polist
 
 let pp_board fmt board =
-  List.iter
-    (fun x ->
-      List.iter (fun y -> Format.fprintf fmt "%a" pp_player y) x;
-      Format.fprintf fmt "@\n")
+  List.iteri
+    (fun v x ->
+      if v == 0 then (
+        let l = List.init (List.length board) (fun j -> j) in
+        List.iter
+          (fun i ->
+            Format.fprintf fmt "%s%d   " (if i == 0 then "  ｜ " else "") i)
+          l;
+        Format.fprintf fmt "@,";
+        List.iter
+          (fun i ->
+            Format.fprintf fmt "%s----" (if i == 0 then "-----" else ""))
+          l;
+        Format.fprintf fmt "@,");
+      List.iteri
+        (fun h y ->
+          Format.fprintf fmt "%s%a   "
+            (if h = 0 then
+               (v + int_of_char 'A' |> char_of_int |> String.make 1) ^ " ｜ "
+             else "")
+            pp_player y)
+        x;
+      Format.fprintf fmt "@,  ｜@,")
     board
 
 let init b =

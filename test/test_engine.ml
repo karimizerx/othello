@@ -126,16 +126,20 @@ let test_pp_poslist =
       Alcotest.(check string) "same result" desired result)
 
 let test_pp_board =
-  let result = Format.asprintf "%a" pp_board b in
+  let result = Format.asprintf "@[<h>%a@]" pp_board b in
   let desired =
-    "XX••XX••\n\
-     O•OXO•OX\n\
-     XOO•XOO•\n\
-     XOO•XOO•\n\
-     XX••XX••\n\
-     O•OXO•OX\n\
-     XOO•XOO•\n\
-     XOO•XOO•\n"
+    "  \239\189\156 0   1   2   3   4   5   6   7   \
+     -------------------------------------A \239\189\156 X   X   \
+     \226\128\162   \226\128\162   X   X   \226\128\162   \226\128\162     \
+     \239\189\156B \239\189\156 O   \226\128\162   O   X   O   \226\128\162   \
+     O   X     \239\189\156C \239\189\156 X   O   O   \226\128\162   X   O   \
+     O   \226\128\162     \239\189\156D \239\189\156 X   O   O   \
+     \226\128\162   X   O   O   \226\128\162     \239\189\156E \239\189\156 \
+     X   X   \226\128\162   \226\128\162   X   X   \226\128\162   \
+     \226\128\162     \239\189\156F \239\189\156 O   \226\128\162   O   X   \
+     O   \226\128\162   O   X     \239\189\156G \239\189\156 X   O   O   \
+     \226\128\162   X   O   O   \226\128\162     \239\189\156H \239\189\156 \
+     X   O   O   \226\128\162   X   O   O   \226\128\162     \239\189\156"
   in
   Alcotest.test_case "pp_board" `Quick (fun () ->
       Alcotest.(check string) "same result" desired result)

@@ -104,24 +104,24 @@ let test_pp_player2 =
 let test_pp_hpos =
   let result = Format.asprintf "%a" pp_hpos (Pos.h 7) in
   Alcotest.test_case "pp_hpos" `Quick (fun () ->
-      Alcotest.(check string) "same result" "Pos.(h 7)" result)
+      Alcotest.(check string) "same result" "H" result)
 
 let test_pp_vpos =
   let result = Format.asprintf "%a" pp_vpos (Pos.v 7) in
   Alcotest.test_case "pp_vpos" `Quick (fun () ->
-      Alcotest.(check string) "same result" "Pos.(v 7)" result)
+      Alcotest.(check string) "same result" "7" result)
 
 let test_pp_pos =
   let result = Format.asprintf "%a" pp_pos (Pos.h 7, Pos.v 3) in
   Alcotest.test_case "pp_pos" `Quick (fun () ->
-      Alcotest.(check string) "same result" "(7,3)" result)
+      Alcotest.(check string) "same result" "H3" result)
 
 let test_pp_poslist =
   let result =
     Format.asprintf "%a" pp_poslist
       [ (Pos.h 0, Pos.v 0); (Pos.h 1, Pos.v 4); (Pos.h 5, Pos.v 7) ]
   in
-  let desired = "(0,0) (1,4) (5,7) " in
+  let desired = "A0 B4 F7 " in
   Alcotest.test_case "pp_poslist" `Quick (fun () ->
       Alcotest.(check string) "same result" desired result)
 

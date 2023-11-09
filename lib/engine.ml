@@ -39,9 +39,12 @@ let rec equal_list_player (l1 : player option list) (l2 : player option list) =
 let equal_board (b : board) (b1 : board) =
   equal_list_player (List.flatten b) (List.flatten b1)
 
-let pp_hpos fmt n = match n with H i -> Format.fprintf fmt "Pos.(h %d)" i
-let pp_vpos fmt n = match n with V i -> Format.fprintf fmt "Pos.(v %d)" i
-let pp_pos fmt po = match po with H i, V j -> Format.fprintf fmt "(%d,%d)" i j
+let pp_hpos fmt n =
+  match n with
+  | H i -> Format.fprintf fmt "%c" (char_of_int (i + int_of_char 'A'))
+
+let pp_vpos fmt n = match n with V i -> Format.fprintf fmt "%d" i
+let pp_pos fmt ((h, v) : pos) = Format.fprintf fmt "%a%a" pp_hpos h pp_vpos v
 
 let pp_poslist fmt polist =
   List.iter (fun y -> Format.fprintf fmt "%a " pp_pos y) polist

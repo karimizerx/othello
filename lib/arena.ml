@@ -1,27 +1,25 @@
 open Engine
 
 type trace = (hpos * vpos) list
-
-let pp_trace fmt t = ignore (fmt, t)
-
-let equal_trace t1 t2 =
-  ignore (t1, t2);
-  true
-
 type endplay = Win of player | Giveup of player | Draw
-
-let pp_endplay fmt ep = ignore (fmt, ep)
-
-let equal_endplay e1 e2 =
-  ignore (e1, e2);
-  true
 
 type result = {
   trace : trace;  (** Trace *)
   endplay : endplay;  (** Outcome *)
   final : board;  (** Final state *)
 }
-(** Final state of the game *)
+
+let pp_trace fmt t = List.iter (fun p -> Format.fprintf fmt "%a " pp_pos p) t
+let equal_trace (t1 : pos list) (t2 : pos list) = t1 = t2
+(*List.equal equal_pos t1 t2*)
+
+let pp_endplay fmt ep =
+  match ep with
+  | Win p -> Format.fprintf fmt "%a won the game" pp_player (Some p)
+  | Giveup p -> Format.fprintf fmt "%a gave up" pp_player (Some p)
+  | _ -> Format.fprintf fmt "Draw"
+
+let equal_endplay e1 e2 = e1 = e2
 
 let arena p b f =
   ignore (p, b, f);

@@ -27,7 +27,7 @@ let equal_player p1 p2 =
   | None, None -> true
   | Some X, Some X -> true
   | Some O, Some O -> true
-  | _, _ -> false
+  | _, _ -> failwith "NYI"
 
 let rec equal_list_player (l1 : player option list) (l2 : player option list) =
   match (l1, l2) with

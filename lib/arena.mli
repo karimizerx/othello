@@ -27,6 +27,7 @@ val arena :
     [players X] and [players O]. By default, [init_player] is [X]
     while [init_board] is [empty]. **)
 
+val possible_move_list : player -> board -> pos list  
 val player_teletype : player -> board -> pos option Lwt.t
 val player_random : board -> pos option Lwt.t
 

@@ -50,4 +50,4 @@ let test_possible_move_list =
 
 let () =
   let open Alcotest in
-  run "Arena" [ ("pp", [ test_pp_trace; test_pp_endplay ]) ]
+  run "Arena" [ ("pp", [ test_pp_trace; test_pp_endplay ]);("possible_move_list", [test_possible_move_list]) ]

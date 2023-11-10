@@ -199,12 +199,12 @@ module Verif = struct
   let win b p =
     if can_play b p || can_play b (swap_player p) then false
     else
-      let flatt_b = List.flatten b in
       (* Count player's points *)
       let cnt_points p =
-        List.fold_left
-          (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
-          0 flatt_b
+        b |> List.flatten
+        |> List.fold_left
+             (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
+             0
       in
       cnt_points p >= cnt_points (swap_player p)
 end

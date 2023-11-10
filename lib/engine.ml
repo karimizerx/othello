@@ -119,16 +119,6 @@ let swap_player = function X -> O | O -> X
 let swap_player_opt = function None -> None | Some p -> Some (swap_player p)
 
 module Verif = struct
-  let win b p =
-    let flatt_b = List.flatten b in
-    (* Count player's points *)
-    let cnt_points p =
-      List.fold_left
-        (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
-        0 flatt_b
-    in
-    cnt_points p > cnt_points (swap_player p)
-
   let not_border_dir ((H h, V v) : pos) dir =
     match dir with
     | 0 ->
@@ -205,4 +195,16 @@ module Verif = struct
     in
     if not (havePiece b) then false
     else List.exists (fun po -> move b (Some pl) po != [ po ]) (free_pos b)
+
+  let win b p =
+    if can_play b p || can_play b (swap_player p) then false
+    else
+      (* Count player's points *)
+      let cnt_points p =
+        b |> List.flatten
+        |> List.fold_left
+             (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
+             0
+      in
+      cnt_points p >= cnt_points (swap_player p)
 end

@@ -56,23 +56,24 @@ let pp_board fmt board =
         let l = List.init (List.length board) (fun j -> j) in
         List.iter
           (fun i ->
-            Format.fprintf fmt "%s%d   " (if i == 0 then "  ｜ " else "") i)
+            Format.fprintf fmt "%s%d   " (if i == 0 then "   │ " else "") i)
           l;
         Format.fprintf fmt "@,";
         List.iter
-          (fun i ->
-            Format.fprintf fmt "%s----" (if i == 0 then "-----" else ""))
+          (fun i -> Format.fprintf fmt "%s────" (if i == 0 then "───┼" else ""))
           l;
         Format.fprintf fmt "@,");
       List.iteri
         (fun h y ->
           Format.fprintf fmt "%s%a   "
             (if h = 0 then
-               (v + int_of_char 'A' |> char_of_int |> String.make 1) ^ " ｜ "
+               " "
+               ^ (v + int_of_char 'A' |> char_of_int |> String.make 1)
+               ^ " │ "
              else "")
             pp_player y)
         x;
-      Format.fprintf fmt "@,  ｜@,")
+      Format.fprintf fmt "@,   │@,")
     board
 
 let init b =
@@ -118,16 +119,6 @@ let swap_player = function X -> O | O -> X
 let swap_player_opt = function None -> None | Some p -> Some (swap_player p)
 
 module Verif = struct
-  let win b p =
-    let flatt_b = List.flatten b in
-    (* Count player's points *)
-    let cnt_points p =
-      List.fold_left
-        (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
-        0 flatt_b
-    in
-    cnt_points p > cnt_points (swap_player p)
-
   let not_border_dir ((H h, V v) : pos) dir =
     match dir with
     | 0 ->
@@ -204,4 +195,16 @@ module Verif = struct
     in
     if not (havePiece b) then false
     else List.exists (fun po -> move b (Some pl) po != [ po ]) (free_pos b)
+
+  let win b p =
+    if can_play b p || can_play b (swap_player p) then false
+    else
+      (* Count player's points *)
+      let cnt_points p =
+        b |> List.flatten
+        |> List.fold_left
+             (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
+             0
+      in
+      cnt_points p >= cnt_points (swap_player p)
 end

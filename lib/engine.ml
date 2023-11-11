@@ -186,15 +186,18 @@ module Verif = struct
     in
     move_in b pl pos 0 [ pos ]
 
-  let can_play b pl =
-    let rec havePiece board =
-      match board with
-      | [] -> false
-      | line :: otherlines ->
-          if List.mem (Some pl) line then true else havePiece otherlines
+  let possible_move_list p b =
+    let rec possible_move_list_aux p b l free_pos =
+      match free_pos with
+      | h :: t ->
+          if List.length (move b (Some p) h) > 1 then
+            possible_move_list_aux p b (l @ [ h ]) t
+          else possible_move_list_aux p b l t
+      | [] -> l
     in
-    if not (havePiece b) then false
-    else List.exists (fun po -> move b (Some pl) po != [ po ]) (free_pos b)
+    possible_move_list_aux p b [] (free_pos b)
+
+  let can_play b pl = List.length (possible_move_list pl b) > 0
 
   let win b p =
     if can_play b p || can_play b (swap_player p) then false

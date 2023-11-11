@@ -25,19 +25,8 @@ let arena p b f =
   ignore (p, b, f);
   Lwt.return { trace = []; endplay = Draw; final = [] }
 
-let possible_move_list p b =
-  let rec possible_move_list_aux p b l free_pos =
-    let open Verif in
-    match free_pos with
-    | h :: t ->
-        if List.length (move b (Some p) h) > 1 then
-          possible_move_list_aux p b (l @ [ h ]) t
-        else possible_move_list_aux p b l t
-    | [] -> l
-  in
-  possible_move_list_aux p b [] (free_pos b)
-
 let player_teletype p b =
+  let open Verif in
   Format.printf "@[<v>It's player %a's turn.@," pp_player (Some p);
   Format.printf "Board:  @[<v>%a@]@," pp_board b;
   Format.printf "Possible moves : @[<v>%a@]@," pp_poslist

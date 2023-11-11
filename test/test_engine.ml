@@ -284,6 +284,20 @@ let test_move7 =
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
+let test_possible_move_list =
+  let open Verif in
+  let result = possible_move_list X res_new_board in
+  let desired =
+    [
+      (Pos.h 2, Pos.v 3);
+      (Pos.h 3, Pos.v 2);
+      (Pos.h 4, Pos.v 5);
+      (Pos.h 5, Pos.v 4);
+    ]
+  in
+  Alcotest.test_case "possible_move_list" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
 let test_can_play1 =
   let open Verif in
   let result = can_play b O in
@@ -317,6 +331,7 @@ let () =
           test_pp_poslist;
         ] );
       ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
+      ("possible_move_list", [ test_possible_move_list ]);
       ("can_play", [ test_can_play1; test_can_play2; test_can_play3 ]);
       ("win", [ test_win_1; test_win_2; test_win_3 ]);
       ( "move",

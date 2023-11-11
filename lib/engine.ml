@@ -27,7 +27,8 @@ let equal_player p1 p2 =
   | None, None -> true
   | Some X, Some X -> true
   | Some O, Some O -> true
-  | _, _ -> failwith "NYI"
+  | Some _, None | None, Some _ -> false
+  | Some X, Some O | Some O, Some X -> false
 
 let rec equal_list_player (l1 : player option list) (l2 : player option list) =
   match (l1, l2) with
@@ -94,12 +95,18 @@ exception Invalid_move
 
 let get (b : board) ((H h, V v) : pos) = List.nth (List.nth b h) v
 
-let set (b : board) ((H h, V v) : pos) pl =
-  List.mapi
-    (fun i line ->
-      if i = h then List.mapi (fun j el -> if j = v then Some pl else el) line
-      else line)
-    b
+let rec set (b : board) pl pos_list =
+  match pos_list with
+  | [] -> b
+  | (H h, V v) :: tl ->
+      set
+        (List.mapi
+           (fun i line ->
+             if i = h then
+               List.mapi (fun j el -> if j = v then Some pl else el) line
+             else line)
+           b)
+        pl tl
 
 let free_pos b : pos list =
   let copy_b = List.append [] b in
@@ -117,44 +124,34 @@ let swap_player = function X -> O | O -> X
 let swap_player_opt = function None -> None | Some p -> Some (swap_player p)
 
 module Verif = struct
-  let win b p =
-    let flatt_b = List.flatten b in
-    (* Count player's points *)
-    let cnt_points p =
-      List.fold_left
-        (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
-        0 flatt_b
-    in
-    cnt_points p > cnt_points (swap_player p)
-
   let not_border_dir ((H h, V v) : pos) dir =
     match dir with
     | 0 ->
-        if equal_hpos (H h) (H 0) then raise Invalid_move (*west*)
+        if equal_vpos (V v) (V 0) then raise Invalid_move (*west*)
         else (H h, V (v - 1))
     | 1 ->
         if equal_hpos (H h) (H 0) || equal_vpos (V v) (V 0) then
           raise Invalid_move (*north west*)
         else (H (h - 1), V (v - 1))
     | 2 ->
-        if equal_vpos (V v) (V 0) then raise Invalid_move (*north*)
+        if equal_hpos (H h) (H 0) then raise Invalid_move (*north*)
         else (H (h - 1), V v)
     | 3 ->
-        if equal_hpos (H h) (H 7) || equal_vpos (V v) (V 0) then
+        if equal_vpos (V v) (V 7) || equal_hpos (H v) (H 0) then
           raise Invalid_move (*north east*)
         else (H (h - 1), V (v + 1))
     | 4 ->
-        if equal_hpos (H h) (H 7) then raise Invalid_move (*east*)
+        if equal_vpos (V v) (V 7) then raise Invalid_move (*east*)
         else (H h, V (v + 1))
     | 5 ->
         if equal_hpos (H h) (H 7) || equal_vpos (V v) (V 7) then
           raise Invalid_move (*south east*)
         else (H (h + 1), V (v + 1))
     | 6 ->
-        if equal_vpos (V v) (V 7) then raise Invalid_move (*south*)
+        if equal_hpos (H h) (H 7) then raise Invalid_move (*south*)
         else (H (h + 1), V v)
     | _ ->
-        if equal_hpos (H h) (H 0) || equal_vpos (V v) (V 7) then
+        if equal_hpos (H h) (H 7) || equal_vpos (V v) (V 0) then
           raise Invalid_move (*south west*)
         else (H (h + 1), V (v - 1))
 
@@ -194,13 +191,28 @@ module Verif = struct
     in
     move_in b pl pos 0 [ pos ]
 
-  let can_play b pl =
-    let rec havePiece board =
-      match board with
-      | [] -> false
-      | line :: otherlines ->
-          if List.mem (Some pl) line then true else havePiece otherlines
+  let possible_move_list p b =
+    let rec possible_move_list_aux p b l free_pos =
+      match free_pos with
+      | h :: t ->
+          if List.length (move b (Some p) h) > 1 then
+            possible_move_list_aux p b (l @ [ h ]) t
+          else possible_move_list_aux p b l t
+      | [] -> l
     in
-    if not (havePiece b) then false
-    else List.exists (fun po -> move b (Some pl) po != [ po ]) (free_pos b)
+    possible_move_list_aux p b [] (free_pos b)
+
+  let can_play b pl = List.length (possible_move_list pl b) > 0
+
+  let win b p =
+    if can_play b p || can_play b (swap_player p) then false
+    else
+      (* Count player's points *)
+      let cnt_points p =
+        b |> List.flatten
+        |> List.fold_left
+             (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
+             0
+      in
+      cnt_points p >= cnt_points (swap_player p)
 end

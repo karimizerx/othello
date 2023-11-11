@@ -10,25 +10,19 @@ type endplay = Win of player | Giveup of player | Draw
 val pp_endplay : Format.formatter -> endplay -> unit
 val equal_endplay : endplay -> endplay -> bool
 
-type result = {
-  trace : trace;  (** Trace *)
-  endplay : endplay;  (** Outcome *)
-  final : board;  (** Final state *)
-}
-(** Final state of the game *)
-
-val arena :
+val play :
   player ->
   board ->
-  (player -> board -> (hpos * vpos) option Lwt.t) ->
-  (* fonction joueur *)
-  result Lwt.t
-(** [arena ~init_player ~init_board players] simulates a game between
-    [players X] and [players O]. By default, [init_player] is [X]
-    while [init_board] is [empty]. **)
+  (player -> board -> (hpos * vpos) option) ->
+  trace ->
+  board * trace
 
-val player_teletype : player -> board -> pos option Lwt.t
-val player_random : board -> pos option Lwt.t
+val game :
+  (player -> board -> (hpos * vpos) option) ->
+  (player -> board -> (hpos * vpos) option) ->
+  board ->
+  unit
 
-val player_giveup : board -> pos option Lwt.t
-(** [player_giveup] always fails to propose a move. *)
+val player_teletype : player -> board -> pos option
+val player_random : player -> board -> pos option
+val player_giveup : player -> board -> pos option

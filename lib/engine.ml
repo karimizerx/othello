@@ -137,7 +137,7 @@ module Verif = struct
         if equal_hpos (H h) (H 0) then raise Invalid_move (*north*)
         else (H (h - 1), V v)
     | 3 ->
-        if equal_vpos (V v) (V 7) || equal_hpos (H v) (H 0) then
+        if equal_vpos (V v) (V 7) || equal_hpos (H h) (H 0) then
           raise Invalid_move (*north east*)
         else (H (h - 1), V (v + 1))
     | 4 ->
@@ -159,7 +159,8 @@ module Verif = struct
   let next_pos_player board player pos dir =
     try
       let next_pos = not_border_dir pos dir in
-      if get board next_pos = player then next_pos else (H (-2), V (-2))
+      if equal_player (get board next_pos) player then next_pos
+      else (H (-2), V (-2))
     with _ -> (H (-1), V (-1))
 
   let rec same_player_line board player pos dir res =

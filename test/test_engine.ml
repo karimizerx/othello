@@ -78,6 +78,18 @@ let bX =
     [ Some X; Some X; Some X; Some X; Some X; Some X; None; Some X ];
   ]
 
+let only_x =
+  [
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
+  ]
+
 (* Case :  No solution for player [O] *)
 let bNSO =
   [
@@ -140,18 +152,19 @@ let test_pp_poslist =
 let test_pp_board =
   let result = Format.asprintf "@[<h>%a@]" pp_board b in
   let desired =
-    "  \226\148\130 0   1   2   3   4   5   6   7   \
-     \226\148\128\226\148\128\226\148\188\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128A \
-     \226\148\130 X   X   \226\128\162   \226\128\162   X   X   \226\128\162   \
-     \226\128\162     \226\148\130B \226\148\130 O   \226\128\162   O   X   \
-     O   \226\128\162   O   X     \226\148\130C \226\148\130 X   O   O   \
-     \226\128\162   X   O   O   \226\128\162     \226\148\130D \226\148\130 \
-     X   O   O   \226\128\162   X   O   O   \226\128\162     \226\148\130E \
-     \226\148\130 X   X   \226\128\162   \226\128\162   X   X   \226\128\162   \
-     \226\128\162     \226\148\130F \226\148\130 O   \226\128\162   O   X   \
-     O   \226\128\162   O   X     \226\148\130G \226\148\130 X   O   O   \
-     \226\128\162   X   O   O   \226\128\162     \226\148\130H \226\148\130 \
-     X   O   O   \226\128\162   X   O   O   \226\128\162     \226\148\130"
+    "   \226\148\130 0   1   2   3   4   5   6   7   \
+     \226\148\128\226\148\128\226\148\128\226\148\188\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128 \
+     A \226\148\130 X   X   \226\128\162   \226\128\162   X   X   \
+     \226\128\162   \226\128\162      \226\148\130 B \226\148\130 O   \
+     \226\128\162   O   X   O   \226\128\162   O   X      \226\148\130 C \
+     \226\148\130 X   O   O   \226\128\162   X   O   O   \226\128\162      \
+     \226\148\130 D \226\148\130 X   O   O   \226\128\162   X   O   O   \
+     \226\128\162      \226\148\130 E \226\148\130 X   X   \226\128\162   \
+     \226\128\162   X   X   \226\128\162   \226\128\162      \226\148\130 F \
+     \226\148\130 O   \226\128\162   O   X   O   \226\128\162   O   X      \
+     \226\148\130 G \226\148\130 X   O   O   \226\128\162   X   O   O   \
+     \226\128\162      \226\148\130 H \226\148\130 X   O   O   \226\128\162   \
+     X   O   O   \226\128\162      \226\148\130"
   in
   Alcotest.test_case "pp_board" `Quick (fun () ->
       Alcotest.(check string) "same result" desired result)
@@ -205,7 +218,7 @@ let test_free_pos =
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
 let test_win_1 =
-  let result = Verif.win bX X in
+  let result = Verif.win only_x X in
   let desired = true in
   Alcotest.test_case "x win" `Quick (fun () ->
       Alcotest.(check bool) "same result" desired result)
@@ -317,6 +330,7 @@ let () =
           test_pp_poslist;
         ] );
       ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
+      ("possible_move_list", [ test_possible_move_list ]);
       ("can_play", [ test_can_play1; test_can_play2; test_can_play3 ]);
       ("win", [ test_win_1; test_win_2; test_win_3 ]);
       ( "move",

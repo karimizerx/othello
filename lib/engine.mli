@@ -50,6 +50,9 @@ module Verif : sig
   (* move returns all the positions to set with player, no check whether if the origin position is empty and on the board *)
   val move : board -> player option -> pos -> pos list
 
+  (*possible_move_list return a list of the possible pos for the next move*)
+  val possible_move_list : player -> board -> pos list
+
   (* [can_play board player] return [true] if the [player] has at least one mark & one solution to play. *)
   val can_play : board -> player -> bool
 end

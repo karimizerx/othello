@@ -4,23 +4,23 @@ open Omizer2mizer.Arena
 (*let trace = Alcotest.testable pp_trace equal_trace
   let endplay = Alcotest.testable pp_endplay equal_endplay*)
 
-  let hpos = Alcotest.testable pp_hpos equal_hpos
-  let vpos = Alcotest.testable pp_vpos equal_vpos
-  let trace = [ (H 3, V 2); (H 5, V 6); (H 2, V 3) ]
-  let endp = Win X
-  
-  let default_board =
-    [
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; Some O; Some X; None; None; None ];
-      [ None; None; None; Some X; Some O; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-    ]
-  
+let hpos = Alcotest.testable pp_hpos equal_hpos
+let vpos = Alcotest.testable pp_vpos equal_vpos
+let trace = [ (H 3, V 2); (H 5, V 6); (H 2, V 3) ]
+let endp = Win X
+
+let default_board =
+  [
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; Some O; Some X; None; None; None ];
+    [ None; None; None; Some X; Some O; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
 let test_pp_trace =
   let result = Format.asprintf "%a" pp_trace trace in
   let desired = "D2 F6 C3 " in
@@ -46,8 +46,10 @@ let test_possible_move_list =
   Alcotest.test_case "possible_move_list" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
-
-
 let () =
   let open Alcotest in
-  run "Arena" [ ("pp", [ test_pp_trace; test_pp_endplay ]);("possible_move_list", [test_possible_move_list]) ]
+  run "Arena"
+    [
+      ("pp", [ test_pp_trace; test_pp_endplay ]);
+      ("possible_move_list", [ test_possible_move_list ]);
+    ]

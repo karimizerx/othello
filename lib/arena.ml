@@ -29,9 +29,9 @@ let rec possible_move_list_aux p b l free_pos =
   let open Verif in
   match free_pos with
   | h :: t ->
-    if List.length (move b (Some p) h) > 1 then
-      possible_move_list_aux p b (l @ [ h ]) t
-    else possible_move_list_aux p b l t
+      if List.length (move b (Some p) h) > 1 then
+        possible_move_list_aux p b (l @ [ h ]) t
+      else possible_move_list_aux p b l t
   | [] -> l
 
 let possible_move_list p b = possible_move_list_aux p b [] (free_pos b)

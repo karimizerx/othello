@@ -26,8 +26,16 @@ let arena p b f =
   Lwt.return { trace = []; endplay = Draw; final = [] }
 
 let player_teletype p b =
-  ignore (p, b);
-  Lwt.return None
+  let open Verif in
+  Format.printf "@[<v>It's player %a's turn.@," pp_player (Some p);
+  Format.printf "Board:  @[<v>%a@]@," pp_board b;
+  Format.printf "Possible moves : @[<v>%a@]@," pp_poslist
+    (possible_move_list p b);
+  Format.printf "Choose your move : @]";
+  try
+    Scanf.scanf "%c%d\n" (fun i j ->
+        Lwt.return (Some (Pos.h (int_of_char i - int_of_char 'A'), Pos.v j)))
+  with Scanf.Scan_failure _ -> Lwt.return None
 
 let player_random b =
   ignore b;

@@ -15,6 +15,13 @@ let pp_endplay fmt ep =
 
 let equal_endplay e1 e2 = e1 = e2
 let check_pos board (h, v) = List.exists (equal_pos (h, v)) (free_pos board)
+let player_function player f_p1 f_p2 = match player with X -> f_p1 | _ -> f_p2
+
+let endgame board trace status =
+  Format.printf "@[<v>%a@]@," pp_endplay status;
+  Format.printf "board : @[<v>%a@]@." pp_board board;
+  Format.printf "trace : @[<v>%a@]@." pp_trace trace;
+  ()
 
 let rec play (player : player) (board : board)
     (f_player : player -> board -> (hpos * vpos) option) (trace : trace) =
@@ -30,35 +37,27 @@ let rec play (player : player) (board : board)
         else (set board player to_change, List.append trace [ p ])
       else play player board f_player trace
 
-let player_fonction player f_p1 f_p2 = match player with X -> f_p1 | _ -> f_p2
-
-let endgame board trace status =
-  Format.printf "@[<v>%a@]@," pp_endplay status;
-  Format.printf "board : @[<v>%a@]@." pp_board board;
-  Format.printf "trace : @[<v>%a@]@." pp_trace trace;
-  ()
-
 (*player 1 : X | player 2 : O*)
-let game fonction_player1 fonction_player2 init_board =
+let game function_player1 function_player2 init_board =
   let open Verif in
-  let rec go board player fonction_player1 fonction_player2 (trace : trace) =
+  let rec go board player function_player1 function_player2 (trace : trace) =
+    let current_function =
+      player_function player function_player1 function_player2
+    in
+    let current_player = swap_player player in
     let new_board, new_trace =
-      play (swap_player player) board
-        (player_fonction player fonction_player1 fonction_player2)
-        trace
+      play current_player board current_function trace
     in
     if equal_board board new_board then
-      endgame board trace (Giveup (swap_player player))
-    else if win new_board player && win new_board (swap_player player) then
+      endgame board trace (Giveup current_player)
+    else if win new_board player && win new_board current_player then
       endgame new_board new_trace Draw
     else if win new_board player then endgame new_board new_trace (Win player)
-    else if win new_board player then
-      endgame new_board new_trace (Win (swap_player player))
-    else
-      go new_board (swap_player player) fonction_player1 fonction_player2
-        new_trace
+    else if win new_board current_player then
+      endgame new_board new_trace (Win current_player)
+    else go new_board current_player function_player1 function_player2 new_trace
   in
-  go init_board O fonction_player1 fonction_player2 []
+  go init_board O function_player1 function_player2 []
 
 let player_teletype p b =
   Format.printf "@[<v>It's player %a's turn.@," pp_player (Some p);

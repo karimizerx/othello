@@ -3,7 +3,6 @@ open Omizer2mizer.Engine
 
 let () =
   Format.open_vbox 0;
-  let _ = game player_teletype player_teletype new_board in
-
+  game player_teletype player_teletype new_board;
   Format.close_box ();
   Format.printf "@."

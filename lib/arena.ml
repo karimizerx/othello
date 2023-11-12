@@ -70,9 +70,12 @@ let player_teletype p b =
   with Scanf.Scan_failure _ -> None
 
 let player_random p b =
-  ignore (p, b);
-  Some (H 1, V 1)
+  let open Verif in
+  let listOfMov = possible_move_list p b in
+  if List.length listOfMov > 0 then
+    Some (List.nth listOfMov (Random.int (List.length listOfMov)))
+  else None
 
 let player_giveup p b =
   ignore (p, b);
-  Some (H 1, V 1)
+  None

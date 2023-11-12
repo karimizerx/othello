@@ -360,3 +360,7 @@ let () =
       ("new_board", [ test_new_board ]);
       ("equal", [ test_equal_hpos; test_equal_vpos; test_equal_pos ]);
     ]
+
+let () =
+  Format.open_vbox 0;
+  pp_board Format.std_formatter b

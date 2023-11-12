@@ -54,7 +54,7 @@ let only_x =
   ]
 
 (* Pretty printer for (pos option)'s tests. *)
-let prettyprinter po =
+let pp_pos_opt po =
   match po with None -> "" | Some p -> Format.asprintf "%a" pp_pos p
 
 let trace = [ (H 3, V 2); (H 5, V 6); (H 2, V 3) ]
@@ -133,25 +133,25 @@ let test_player_random2 =
 
 let test_player_random3 =
   let r = player_random O bNSO in
-  let result = prettyprinter r in
+  let result = pp_pos_opt r in
   Alcotest.test_case "player_random" `Quick (fun () ->
       Alcotest.(check string) "same result" "" result)
 
 let test_player_random4 =
   let r = player_random O only_x in
-  let result = prettyprinter r in
+  let result = pp_pos_opt r in
   Alcotest.test_case "player_random" `Quick (fun () ->
       Alcotest.(check string) "same result" "" result)
 
 let test_player_random5 =
   let r = player_random X beq in
-  let result = prettyprinter r in
+  let result = pp_pos_opt r in
   Alcotest.test_case "player_random" `Quick (fun () ->
       Alcotest.(check string) "same result" "" result)
 
 let test_player_giveup =
   let r = player_random X beq in
-  let result = prettyprinter r in
+  let result = pp_pos_opt r in
   Alcotest.test_case "player_giveup" `Quick (fun () ->
       Alcotest.(check string) "same result" "" result)
 

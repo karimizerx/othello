@@ -23,7 +23,9 @@ val player_function :
   pos option
 (** returns the fonction associated with the player : X : player1 / O : player2 *)
 
-val endgame : board -> trace -> endplay -> unit
+val who_wins : board -> trace -> bool * player -> unit
+
+val endgame : board -> trace -> unit
 (** prints the result *)
 
 val play :

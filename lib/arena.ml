@@ -17,11 +17,19 @@ let equal_endplay e1 e2 = e1 = e2
 let check_pos board (h, v) = List.exists (equal_pos (h, v)) (free_pos board)
 let player_function player f_p1 f_p2 = match player with X -> f_p1 | _ -> f_p2
 
-let endgame board trace status =
-  Format.printf "@[<v>%a@]@," pp_endplay status;
+let endgame board trace =
   Format.printf "board : @[<v>%a@]@." pp_board board;
   Format.printf "trace : @[<v>%a@]@." pp_trace trace;
   ()
+
+let who_wins board trace ((giveup, player) : bool * player) =
+  let open Verif in
+  if giveup then Format.printf "@[<v>%a@]@," pp_endplay (Giveup player)
+  else if win board X && win board O then
+    Format.printf "@[<v>%a@]@," pp_endplay Draw
+  else if win board X then Format.printf "@[<v>%a@]@," pp_endplay (Win X)
+  else if win board O then Format.printf "@[<v>%a@]@," pp_endplay (Win O);
+  endgame board trace
 
 let rec play (player : player) (board : board)
     (f_player : player -> board -> (hpos * vpos) option) (trace : trace) =
@@ -41,21 +49,26 @@ let rec play (player : player) (board : board)
 let game function_player1 function_player2 init_board =
   let open Verif in
   let rec go board player function_player1 function_player2 (trace : trace) =
-    let current_function =
-      player_function player function_player1 function_player2
-    in
-    let current_player = swap_player player in
-    let new_board, new_trace =
-      play current_player board current_function trace
-    in
-    if equal_board board new_board then
-      endgame board trace (Giveup current_player)
-    else if win new_board player && win new_board current_player then
-      endgame new_board new_trace Draw
-    else if win new_board player then endgame new_board new_trace (Win player)
-    else if win new_board current_player then
-      endgame new_board new_trace (Win current_player)
-    else go new_board current_player function_player1 function_player2 new_trace
+    if
+      (win new_board X || win new_board O)
+      || ((not (can_play board X)) && not (can_play board O))
+    then who_wins new_board trace (false, player)
+    else
+      let current_player, current_function =
+        if not (can_play board (swap_player player)) then
+          (player, player_function player function_player1 function_player2)
+        else
+          ( swap_player player,
+            player_function (swap_player player) function_player1
+              function_player2 )
+      in
+      let new_board, new_trace =
+        play current_player board current_function trace
+      in
+      if equal_board board new_board then
+        who_wins board trace (true, current_player)
+      else
+        go new_board current_player function_player1 function_player2 new_trace
   in
   go init_board O function_player1 function_player2 []
 

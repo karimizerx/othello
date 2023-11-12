@@ -49,13 +49,11 @@ let rec play (player : player) (board : board)
 let game function_player1 function_player2 init_board =
   let open Verif in
   let rec go board player function_player1 function_player2 (trace : trace) =
-    (*if one of the player has won or if no player can play, the game is finished*)
     if
       (win board X || win board O)
       || ((not (can_play board X)) && not (can_play board O))
     then end_status board trace (false, player)
     else
-      (*player switch from the previous move, if it can't play, the same player plays again*)
       let current_player, current_function =
         if not (can_play board (swap_player player)) then
           (player, player_function player function_player1 function_player2)
@@ -64,14 +62,11 @@ let game function_player1 function_player2 init_board =
             player_function (swap_player player) function_player1
               function_player2 )
       in
-      (*actualizing the board and the trace with the player's move*)
       let new_board, new_trace =
         play current_player board current_function trace
       in
-      (*if the player gave up, end of the game*)
       if equal_board board new_board then
-      end_status board trace (true, current_player)
-      (*we continue !*)
+        end_status board trace (true, current_player)
       else
         go new_board current_player function_player1 function_player2 new_trace
   in

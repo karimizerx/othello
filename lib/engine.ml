@@ -27,7 +27,8 @@ let equal_player p1 p2 =
   | None, None -> true
   | Some X, Some X -> true
   | Some O, Some O -> true
-  | _, _ -> failwith "NYI"
+  | Some _, None | None, Some _ -> false
+  | Some X, Some O | Some O, Some X -> false
 
 let rec equal_list_player (l1 : player option list) (l2 : player option list) =
   match (l1, l2) with
@@ -96,12 +97,18 @@ exception Invalid_move
 
 let get (b : board) ((H h, V v) : pos) = List.nth (List.nth b h) v
 
-let set (b : board) ((H h, V v) : pos) pl =
-  List.mapi
-    (fun i line ->
-      if i = h then List.mapi (fun j el -> if j = v then Some pl else el) line
-      else line)
-    b
+let rec set (b : board) pl pos_list =
+  match pos_list with
+  | [] -> b
+  | (H h, V v) :: tl ->
+      set
+        (List.mapi
+           (fun i line ->
+             if i = h then
+               List.mapi (fun j el -> if j = v then Some pl else el) line
+             else line)
+           b)
+        pl tl
 
 let free_pos b : pos list =
   let copy_b = List.append [] b in
@@ -122,31 +129,31 @@ module Verif = struct
   let not_border_dir ((H h, V v) : pos) dir =
     match dir with
     | 0 ->
-        if equal_hpos (H h) (H 0) then raise Invalid_move (*west*)
+        if equal_vpos (V v) (V 0) then raise Invalid_move (*west*)
         else (H h, V (v - 1))
     | 1 ->
         if equal_hpos (H h) (H 0) || equal_vpos (V v) (V 0) then
           raise Invalid_move (*north west*)
         else (H (h - 1), V (v - 1))
     | 2 ->
-        if equal_vpos (V v) (V 0) then raise Invalid_move (*north*)
+        if equal_hpos (H h) (H 0) then raise Invalid_move (*north*)
         else (H (h - 1), V v)
     | 3 ->
-        if equal_hpos (H h) (H 7) || equal_vpos (V v) (V 0) then
+        if equal_vpos (V v) (V 7) || equal_hpos (H h) (H 0) then
           raise Invalid_move (*north east*)
         else (H (h - 1), V (v + 1))
     | 4 ->
-        if equal_hpos (H h) (H 7) then raise Invalid_move (*east*)
+        if equal_vpos (V v) (V 7) then raise Invalid_move (*east*)
         else (H h, V (v + 1))
     | 5 ->
         if equal_hpos (H h) (H 7) || equal_vpos (V v) (V 7) then
           raise Invalid_move (*south east*)
         else (H (h + 1), V (v + 1))
     | 6 ->
-        if equal_vpos (V v) (V 7) then raise Invalid_move (*south*)
+        if equal_hpos (H h) (H 7) then raise Invalid_move (*south*)
         else (H (h + 1), V v)
     | _ ->
-        if equal_hpos (H h) (H 0) || equal_vpos (V v) (V 7) then
+        if equal_hpos (H h) (H 7) || equal_vpos (V v) (V 0) then
           raise Invalid_move (*south west*)
         else (H (h + 1), V (v - 1))
 
@@ -154,7 +161,8 @@ module Verif = struct
   let next_pos_player board player pos dir =
     try
       let next_pos = not_border_dir pos dir in
-      if get board next_pos = player then next_pos else (H (-2), V (-2))
+      if equal_player (get board next_pos) player then next_pos
+      else (H (-2), V (-2))
     with _ -> (H (-1), V (-1))
 
   let rec same_player_line board player pos dir res =

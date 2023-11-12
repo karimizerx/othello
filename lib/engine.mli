@@ -38,10 +38,11 @@ val new_board : board
 val get : board -> pos -> player option
 
 (* [set board pos player] puts the [player]'s mark at the given position [pos] of the [board]. *)
-val set : board -> pos -> player -> board
+val set : board -> player -> pos list -> board
 
 (* [free_pos board] return the list of all positions not taken by any player *)
 val free_pos : board -> pos list
+val swap_player : player -> player
 
 module Verif : sig
   val win : board -> player -> bool

@@ -5,6 +5,18 @@ let hpos = Alcotest.testable pp_hpos equal_hpos
 let vpos = Alcotest.testable pp_vpos equal_vpos
 let board = Alcotest.testable pp_board equal_board
 
+let baba =
+  [
+    [ Some X; Some X; Some O; None; Some X; Some X; None; None ];
+    [ Some O; Some X; Some O; Some O; Some O; None; Some O; Some X ];
+    [ Some X; Some X; Some O; None; Some X; Some O; Some O; None ];
+    [ Some X; Some X; Some O; None; Some X; Some O; Some O; None ];
+    [ Some X; Some X; None; None; Some X; Some X; None; None ];
+    [ Some O; None; Some O; Some X; Some O; None; Some O; Some X ];
+    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
+    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
+  ]
+
 let b =
   [
     [ Some X; Some X; None; None; Some X; Some X; None; None ];
@@ -174,8 +186,8 @@ let test_equal_pos =
       Alcotest.(check bool) "same result" (equal_pos (H 1, V 2) (H 1, V 2)) true)
 
 let test_set =
-  let set1 = set b (Pos.h 0, Pos.v 0) (O : player) in
-  let result = set set1 (Pos.h 7, Pos.v 7) (O : player) in
+  let set1 = set b (O : player) [ (Pos.h 0, Pos.v 0) ] in
+  let result = set set1 (O : player) [ (Pos.h 7, Pos.v 7) ] in
   let desired = b3 in
   Alcotest.test_case "set" `Quick (fun () ->
       Alcotest.(check board) "same result" desired result)
@@ -237,7 +249,9 @@ let test_move1 =
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
 let test_move2 =
-  let desired = [ (Pos.h 0, Pos.v 7) ] in
+  let desired =
+    [ (Pos.h 0, Pos.v 7); (Pos.h 1, Pos.v 6); (Pos.h 2, Pos.v 5) ]
+  in
   let result = Verif.move b (Some X) (Pos.h 0, Pos.v 7) in
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
@@ -272,6 +286,14 @@ let test_move6 =
     ]
   in
   let result = Verif.move b2 (Some X) (Pos.h 0, Pos.v 3) in
+  Alcotest.test_case "move" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move7 =
+  let desired =
+    [ (Pos.h 0, Pos.v 3); (Pos.h 0, Pos.v 2); (Pos.h 1, Pos.v 2) ]
+  in
+  let result = Verif.move baba (Some X) (Pos.h 0, Pos.v 3) in
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
@@ -327,7 +349,13 @@ let () =
       ("win", [ test_win_1; test_win_2; test_win_3 ]);
       ( "move",
         [
-          test_move1; test_move2; test_move3; test_move4; test_move5; test_move6;
+          test_move1;
+          test_move2;
+          test_move3;
+          test_move4;
+          test_move5;
+          test_move6;
+          test_move7;
         ] );
       ("new_board", [ test_new_board ]);
       ("equal", [ test_equal_hpos; test_equal_vpos; test_equal_pos ]);

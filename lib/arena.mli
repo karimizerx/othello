@@ -1,5 +1,6 @@
 open Engine
 
+(*list that keeps track of the moves done by the players until the and of the game*)
 type trace = (hpos * vpos) list
 
 val pp_trace : Format.formatter -> trace -> unit
@@ -10,25 +11,36 @@ type endplay = Win of player | Giveup of player | Draw
 val pp_endplay : Format.formatter -> endplay -> unit
 val equal_endplay : endplay -> endplay -> bool
 
-type result = {
-  trace : trace;  (** Trace *)
-  endplay : endplay;  (** Outcome *)
-  final : board;  (** Final state *)
-}
-(** Final state of the game *)
+(*checks whether if pos is a free position on the board*)
+val check_pos : board -> pos -> bool
 
-val arena :
+(*returns the fonction associated with the player : X : player1 / O : player2*)
+val player_function :
+  player ->
+  (player -> board -> pos option) ->
+  (player -> board -> pos option) ->
   player ->
   board ->
-  (player -> board -> (hpos * vpos) option Lwt.t) ->
-  (* fonction joueur *)
-  result Lwt.t
-(** [arena ~init_player ~init_board players] simulates a game between
-    [players X] and [players O]. By default, [init_player] is [X]
-    while [init_board] is [empty]. **)
+  pos option
 
-val player_teletype : player -> board -> pos option Lwt.t
-val player_random : board -> pos option Lwt.t
+(*prints the result*)
+val endgame : board -> trace -> endplay -> unit
 
-val player_giveup : board -> pos option Lwt.t
-(** [player_giveup] always fails to propose a move. *)
+(*plays 1 move*)
+val play :
+  player ->
+  board ->
+  (player -> board -> (hpos * vpos) option) ->
+  trace ->
+  board * trace
+
+(*manages the game*)
+val game :
+  (player -> board -> (hpos * vpos) option) ->
+  (player -> board -> (hpos * vpos) option) ->
+  board ->
+  unit
+
+val player_teletype : player -> board -> pos option
+val player_random : player -> board -> pos option
+val player_giveup : player -> board -> pos option

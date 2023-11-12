@@ -21,12 +21,13 @@ val player_function :
   player ->
   board ->
   pos option
-(** returns the fonction associated with the player : X : player1 / O : player2 *)
+(** returns the fonction associated to the player : X : player1 / O : player2 *)
 
-val who_wins : board -> trace -> bool * player -> unit
+val end_status : board -> trace -> bool * player -> unit
+(**prints the result of the game *)
 
 val endgame : board -> trace -> unit
-(** prints the result *)
+(** prints the board and the trace*)
 
 val play :
   player ->

@@ -90,7 +90,7 @@ let test_check_pos_3 =
 let test_player_random =
   let result = player_random X res_new_board in
   match result with
-  (* Si ça renvoie une position, on s'assure qu'elle fait bien partie des solutions possibles. *)
+  (*if it return a pos, we check if it's in the legal positions*)
   | Some position ->
       Alcotest.test_case "player_random" `Quick (fun () ->
           Alcotest.(check bool)
@@ -104,7 +104,7 @@ let test_player_random =
                  (Pos.h 4, Pos.v 5);
                ])
             true)
-      (* Si ça renvoie None, ce n'est pas normal -> test faux *)
+      (*Error if it returns None*)
   | None ->
       Alcotest.test_case "player_random" `Quick (fun () ->
           Alcotest.(check bool) "same result" true false)
@@ -112,7 +112,7 @@ let test_player_random =
 let test_player_random2 =
   let result = player_random O res_new_board in
   match result with
-  (* Si ça renvoie une position, on s'assure qu'elle fait bien partie des solutions possibles. *)
+  (*if it return a pos, we check if it's in the legal positions*)
   | Some position ->
       Alcotest.test_case "player_random" `Quick (fun () ->
           Alcotest.(check bool)
@@ -126,7 +126,7 @@ let test_player_random2 =
                  (Pos.h 4, Pos.v 2);
                ])
             true)
-      (* Si ça renvoie None, ce n'est pas normal -> test faux *)
+      (*Error if it returns None*)
   | None ->
       Alcotest.test_case "player_random" `Quick (fun () ->
           Alcotest.(check bool) "same result" true false)

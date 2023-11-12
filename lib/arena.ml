@@ -22,20 +22,20 @@ let endgame board trace =
   Format.printf "trace : @[<v>%a@]@." pp_trace trace;
   ()
 
-let who_wins board trace ((giveup, player) : bool * player) =
+let end_status board trace ((giveup, player) : bool * player) =
   let open Verif in
-  if giveup then Format.printf "@[<v>%a@]@," pp_endplay (Giveup player)
-  else if win board X && win board O then
-    Format.printf "@[<v>%a@]@," pp_endplay Draw
-  else if win board X then Format.printf "@[<v>%a@]@," pp_endplay (Win X)
-  else if win board O then Format.printf "@[<v>%a@]@," pp_endplay (Win O);
+  (if giveup then Format.printf "@[<v>%a@]@," pp_endplay (Giveup player)
+   else
+     match (win board X, win board O) with
+     | true, true -> Format.printf "@[<v>%a@]@," pp_endplay Draw
+     | true, false -> Format.printf "@[<v>%a@]@," pp_endplay (Win X)
+     | _ -> Format.printf "@[<v>%a@]@," pp_endplay (Win O));
   endgame board trace
 
 let rec play (player : player) (board : board)
     (f_player : player -> board -> (hpos * vpos) option) (trace : trace) =
   let open Engine.Verif in
   let choice = f_player player board in
-
   match choice with
   | None -> (board, trace)
   | Some p ->
@@ -49,11 +49,13 @@ let rec play (player : player) (board : board)
 let game function_player1 function_player2 init_board =
   let open Verif in
   let rec go board player function_player1 function_player2 (trace : trace) =
+    (*if one of the player has won or if no player can play, the game is finished*)
     if
-      (win new_board X || win new_board O)
+      (win board X || win board O)
       || ((not (can_play board X)) && not (can_play board O))
-    then who_wins new_board trace (false, player)
+    then end_status board trace (false, player)
     else
+      (*player switch from the previous move, if it can't play, the same player plays again*)
       let current_player, current_function =
         if not (can_play board (swap_player player)) then
           (player, player_function player function_player1 function_player2)
@@ -62,11 +64,14 @@ let game function_player1 function_player2 init_board =
             player_function (swap_player player) function_player1
               function_player2 )
       in
+      (*actualizing the board and the trace with the player's move*)
       let new_board, new_trace =
         play current_player board current_function trace
       in
+      (*if the player gave up, end of the game*)
       if equal_board board new_board then
-        who_wins board trace (true, current_player)
+      end_status board trace (true, current_player)
+      (*we continue !*)
       else
         go new_board current_player function_player1 function_player2 new_trace
   in
@@ -84,9 +89,9 @@ let player_teletype p b =
 
 let player_random p b =
   let open Verif in
-  let listOfMov = possible_move_list p b in
-  if List.length listOfMov > 0 then
-    Some (List.nth listOfMov (Random.int (List.length listOfMov)))
+  let list_of_move = possible_move_list p b in
+  if List.length list_of_move > 0 then
+    Some (List.nth list_of_move (Random.int (List.length list_of_move)))
   else None
 
 let player_giveup p b =

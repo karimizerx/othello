@@ -155,6 +155,45 @@ let test_player_giveup =
   Alcotest.test_case "player_giveup" `Quick (fun () ->
       Alcotest.(check string) "same result" "" result)
 
+let generator_move (possible_moves : pos list) =
+  let open QCheck in
+  Gen.oneof (List.map (fun x -> Gen.return x) possible_moves)
+
+let generator_board : board QCheck.Gen.t =
+ fun st ->
+  let open Verif in
+  let function_player p b =
+    let moves = possible_move_list p b in
+    match moves with [] -> None | _ -> Some (generator_move moves st)
+  in
+  let rec go board player function_player1 function_player2 (trace : trace) =
+    if (not (can_play board X)) && not (can_play board O) then board
+    else
+      let current_player, current_function =
+        if not (can_play board (swap_player player)) then
+          (player, player_function player function_player1 function_player2)
+        else
+          ( swap_player player,
+            player_function (swap_player player) function_player1
+              function_player2 )
+      in
+      let new_board, new_trace =
+        play current_player board current_function trace
+      in
+      if equal_board board new_board then board
+      else
+        go new_board current_player function_player1 function_player2 new_trace
+  in
+  go new_board O function_player function_player []
+
+let arbitrary_board =
+  QCheck.make ~print:(Format.asprintf "%a" pp_board) generator_board
+
+let test_board =
+  let open QCheck in
+  Test.make ~count:100 ~name:"p1 and p2 can't play" arbitrary_board (fun b ->
+      Verif.((not (can_play b X)) && not (can_play b O)))
+
 let () =
   let open Alcotest in
   run "Arena"
@@ -170,4 +209,6 @@ let () =
           test_player_random5;
           test_player_giveup;
         ] );
+      ( "game (QCheck #startupnation)",
+        [ QCheck_alcotest.to_alcotest test_board ] );
     ]

@@ -49,10 +49,8 @@ let rec play (player : player) (board : board)
 let game function_player1 function_player2 init_board =
   let open Verif in
   let rec go board player function_player1 function_player2 (trace : trace) =
-    if
-      (win board X || win board O)
-      || ((not (can_play board X)) && not (can_play board O))
-    then end_status board trace (false, player)
+    if (not (can_play board X)) && not (can_play board O) then
+      end_status board trace (false, player)
     else
       let current_player, current_function =
         if not (can_play board (swap_player player)) then

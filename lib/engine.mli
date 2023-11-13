@@ -56,6 +56,9 @@ module Verif : sig
   val possible_move_list : player -> board -> pos list
   (** possible_move_list return a list of the possible pos for the next move*)
 
+  val cnt_points : board -> player -> int
+  (** [cnt_points board player] return [player]'s points. *)
+
   val can_play : board -> player -> bool
   (** [can_play board player] return [true] if the [player] has at least one mark & one solution to play. *)
 end

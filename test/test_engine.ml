@@ -1,119 +1,5 @@
 open Omizer2mizer.Engine
-
-let player = Alcotest.testable pp_player equal_player
-let hpos = Alcotest.testable pp_hpos equal_hpos
-let vpos = Alcotest.testable pp_vpos equal_vpos
-let board = Alcotest.testable pp_board equal_board
-
-let baba =
-  [
-    [ Some X; Some X; Some O; None; Some X; Some X; None; None ];
-    [ Some O; Some X; Some O; Some O; Some O; None; Some O; Some X ];
-    [ Some X; Some X; Some O; None; Some X; Some O; Some O; None ];
-    [ Some X; Some X; Some O; None; Some X; Some O; Some O; None ];
-    [ Some X; Some X; None; None; Some X; Some X; None; None ];
-    [ Some O; None; Some O; Some X; Some O; None; Some O; Some X ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
-  ]
-
-let b =
-  [
-    [ Some X; Some X; None; None; Some X; Some X; None; None ];
-    [ Some O; None; Some O; Some X; Some O; None; Some O; Some X ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
-    [ Some X; Some X; None; None; Some X; Some X; None; None ];
-    [ Some O; None; Some O; Some X; Some O; None; Some O; Some X ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
-  ]
-
-let res_new_board =
-  [
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; Some O; Some X; None; None; None ];
-    [ None; None; None; Some X; Some O; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-  ]
-
-let b2 =
-  [
-    [ None; None; None; None; None; None; None; Some X ];
-    [ None; None; None; Some O; None; None; Some X; None ];
-    [ None; None; None; Some O; None; Some X; None; None ];
-    [ None; None; None; Some O; Some X; None; None; None ];
-    [ None; None; None; Some X; Some O; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-  ]
-
-let b3 =
-  [
-    [ Some O; Some X; None; None; Some X; Some X; None; None ];
-    [ Some O; None; Some O; Some X; Some O; None; Some O; Some X ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
-    [ Some X; Some X; None; None; Some X; Some X; None; None ];
-    [ Some O; None; Some O; Some X; Some O; None; Some O; Some X ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; None ];
-    [ Some X; Some O; Some O; None; Some X; Some O; Some O; Some O ];
-  ]
-
-(* Case :  Only [X]'s mark *)
-let bX =
-  [
-    [ Some X; Some X; None; None; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; None; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; None; Some X ];
-  ]
-
-let only_x =
-  [
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-  ]
-
-(* Case :  No solution for player [O] *)
-let bNSO =
-  [
-    [ Some X; Some X; None; None; Some X; Some X; None; None ];
-    [ Some X; Some O; None; None; Some X; Some X; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-  ]
-
-let beq =
-  [
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-  ]
+open Utils
 
 let test_pp_player1 =
   let result = Format.asprintf "%a" pp_player (Some O) in
@@ -150,7 +36,7 @@ let test_pp_poslist =
       Alcotest.(check string) "same result" desired result)
 
 let test_pp_board =
-  let result = Format.asprintf "@[<h>%a@]" pp_board b in
+  let result = Format.asprintf "@[<h>%a@]" pp_board b1 in
   let desired =
     "   \226\148\130 0   1   2   3   4   5   6   7   \
      \226\148\128\226\148\128\226\148\128\226\148\188\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128\226\148\128 \
@@ -186,7 +72,7 @@ let test_equal_pos =
       Alcotest.(check bool) "same result" (equal_pos (H 1, V 2) (H 1, V 2)) true)
 
 let test_set =
-  let set1 = set b (O : player) [ (Pos.h 0, Pos.v 0) ] in
+  let set1 = set b1 (O : player) [ (Pos.h 0, Pos.v 0) ] in
   let result = set set1 (O : player) [ (Pos.h 7, Pos.v 7) ] in
   let desired = b3 in
   Alcotest.test_case "set" `Quick (fun () ->
@@ -195,9 +81,9 @@ let test_set =
 let test_get =
   let result =
     [
-      get b (Pos.h 0, Pos.v 0);
-      get b (Pos.h 3, Pos.v 1);
-      get b (Pos.h 6, Pos.v 7);
+      get b1 (Pos.h 0, Pos.v 0);
+      get b1 (Pos.h 3, Pos.v 1);
+      get b1 (Pos.h 6, Pos.v 7);
     ]
   in
   let desired = [ Some X; Some O; None ] in
@@ -230,7 +116,7 @@ let test_win_2 =
       Alcotest.(check (pair bool bool)) "same result" desired result)
 
 let test_win_3 =
-  let result = Verif.win b X && Verif.win b O in
+  let result = Verif.win b1 X && Verif.win b1 O in
   let desired = false in
   Alcotest.test_case "winner uniqueness (when not draw)" `Quick (fun () ->
       Alcotest.(check bool) "same result" desired result)
@@ -244,7 +130,7 @@ let test_move1 =
       (Pos.h 3, Pos.v 1);
     ]
   in
-  let result = Verif.move b (Some X) (Pos.h 1, Pos.v 1) in
+  let result = Verif.move b1 (Some X) (Pos.h 1, Pos.v 1) in
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
@@ -252,7 +138,7 @@ let test_move2 =
   let desired =
     [ (Pos.h 0, Pos.v 7); (Pos.h 1, Pos.v 6); (Pos.h 2, Pos.v 5) ]
   in
-  let result = Verif.move b (Some X) (Pos.h 0, Pos.v 7) in
+  let result = Verif.move b1 (Some X) (Pos.h 0, Pos.v 7) in
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
@@ -260,13 +146,13 @@ let test_move3 =
   let desired =
     [ (Pos.h 7, Pos.v 7); (Pos.h 7, Pos.v 6); (Pos.h 7, Pos.v 5) ]
   in
-  let result = Verif.move b (Some X) (Pos.h 7, Pos.v 7) in
+  let result = Verif.move b1 (Some X) (Pos.h 7, Pos.v 7) in
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
 let test_move4 =
   let desired = [ (Pos.h 5, Pos.v 6) ] in
-  let result = Verif.move b (Some O) (Pos.h 5, Pos.v 6) in
+  let result = Verif.move b1 (Some O) (Pos.h 5, Pos.v 6) in
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
@@ -293,7 +179,7 @@ let test_move7 =
   let desired =
     [ (Pos.h 0, Pos.v 3); (Pos.h 0, Pos.v 2); (Pos.h 1, Pos.v 2) ]
   in
-  let result = Verif.move baba (Some X) (Pos.h 0, Pos.v 3) in
+  let result = Verif.move b0 (Some X) (Pos.h 0, Pos.v 3) in
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
@@ -313,7 +199,7 @@ let test_possible_move_list =
 
 let test_can_play1 =
   let open Verif in
-  let result = can_play b O in
+  let result = can_play b1 O in
   Alcotest.test_case "can_play" `Quick (fun () ->
       Alcotest.(check bool) "same result" true result)
 
@@ -360,7 +246,3 @@ let () =
       ("new_board", [ test_new_board ]);
       ("equal", [ test_equal_hpos; test_equal_vpos; test_equal_pos ]);
     ]
-
-let () =
-  Format.open_vbox 0;
-  pp_board Format.std_formatter b

@@ -75,10 +75,12 @@ let game function_player1 function_player2 init_board =
   in
   go init_board O function_player1 function_player2 []
 
+(*Player's functions*)
+
 let player_teletype p b =
   Format.printf "@[<v>It's player %a's turn.@," pp_player (Some p);
   Format.printf "Board:  @[<v>%a@]@," pp_board b;
-  Format.printf "@[<v>possible moves : %a@]@," pp_poslist
+  Format.printf "@[<v>Possible moves : %a@]@," pp_poslist
     (Verif.possible_move_list p b);
   Format.printf "Choose your move : @]@.";
   try

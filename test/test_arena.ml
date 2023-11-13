@@ -1,64 +1,6 @@
 open Omizer2mizer.Engine
 open Omizer2mizer.Arena
-
-(*let trace = Alcotest.testable pp_trace equal_trace
-  let endplay = Alcotest.testable pp_endplay equal_endplay*)
-
-let res_new_board =
-  [
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; Some O; Some X; None; None; None ];
-    [ None; None; None; Some X; Some O; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-  ]
-
-(* Case :  No solution for player [O] *)
-let bNSO =
-  [
-    [ Some X; Some X; None; None; Some X; Some X; None; None ];
-    [ Some X; Some O; None; None; Some X; Some X; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-    [ None; None; None; None; None; None; None; None ];
-  ]
-
-let beq =
-  [
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-    [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
-  ]
-
-let only_x =
-  [
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-    [ Some X; Some X; Some X; Some X; Some X; Some X; Some X; Some X ];
-  ]
-
-(* Pretty printer for (pos option)'s tests. *)
-let pp_pos_opt po =
-  match po with None -> "" | Some p -> Format.asprintf "%a" pp_pos p
-
-let trace = [ (H 3, V 2); (H 5, V 6); (H 2, V 3) ]
-let endp = Win X
+open Utils
 
 let test_pp_trace =
   let result = Format.asprintf "%a" pp_trace trace in

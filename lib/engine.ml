@@ -207,15 +207,13 @@ module Verif = struct
 
   let can_play b pl = List.length (possible_move_list pl b) > 0
 
+  let cnt_points b p =
+    b |> List.flatten
+    |> List.fold_left
+         (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
+         0
+
   let win b p =
     if can_play b p || can_play b (swap_player p) then false
-    else
-      (* Count player's points *)
-      let cnt_points p =
-        b |> List.flatten
-        |> List.fold_left
-             (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
-             0
-      in
-      cnt_points p >= cnt_points (swap_player p)
+    else cnt_points b p >= cnt_points b (swap_player p)
 end

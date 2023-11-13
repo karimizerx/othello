@@ -13,6 +13,8 @@ depends: [
   "ocaml"
   "dune" {>= "3.8"}
   "alcotest" {with-test}
+  "qcheck"
+  "qcheck-alcotest"
   "lwt"
   "odoc" {with-doc}
 ]

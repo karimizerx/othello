@@ -40,13 +40,13 @@ let rec play (player : player) (board : board)
   match choice with
   | None -> (board, trace)
   | Some p ->
-      if check_pos board p then
-        let to_change = move board (Some player) p in
-        if List.length to_change = 1 then (
-          Format.printf "Invalid move ! Try again.@.";
-          play player board f_player trace)
-        else (set board player to_change, List.append trace [ p ])
-      else play player board f_player trace
+    if check_pos board p then
+      let to_change = move board (Some player) p in
+      if List.length to_change = 1 then (
+        Format.printf "Invalid move ! Try again.@.";
+        play player board f_player trace)
+      else (set board player to_change, List.append trace [ p ])
+    else play player board f_player trace
 
 (*player 1 : X | player 2 : O*)
 let game function_player1 function_player2 init_board =
@@ -75,10 +75,12 @@ let game function_player1 function_player2 init_board =
   in
   go init_board O function_player1 function_player2 []
 
+(*Player's functions*)
+
 let player_teletype p b =
   Format.printf "@[<v>It's player %a's turn.@," pp_player (Some p);
   Format.printf "Board:  @[<v>%a@]@," pp_board b;
-  Format.printf "@[<v>possible moves : %a@]@," pp_poslist
+  Format.printf "@[<v>Possible moves : %a@]@," pp_poslist
     (Verif.possible_move_list p b);
   Format.printf "Choose your move : @]@.";
   try

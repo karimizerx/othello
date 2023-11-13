@@ -40,13 +40,13 @@ let rec play (player : player) (board : board)
   match choice with
   | None -> (board, trace)
   | Some p ->
-    if check_pos board p then
-      let to_change = move board (Some player) p in
-      if List.length to_change = 1 then (
-        Format.printf "Invalid move ! Try again.@.";
-        play player board f_player trace)
-      else (set board player to_change, List.append trace [ p ])
-    else play player board f_player trace
+      if check_pos board p then
+        let to_change = move board (Some player) p in
+        if List.length to_change = 1 then (
+          Format.printf "Invalid move ! Try again.@.";
+          play player board f_player trace)
+        else (set board player to_change, List.append trace [ p ])
+      else play player board f_player trace
 
 (*player 1 : X | player 2 : O*)
 let game function_player1 function_player2 init_board =

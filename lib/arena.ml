@@ -30,6 +30,7 @@ let end_status board trace ((giveup, player) : bool * player) =
      | true, true -> Format.printf "@[<v>%a@]@," pp_endplay Draw
      | true, false -> Format.printf "@[<v>%a@]@," pp_endplay (Win X)
      | _ -> Format.printf "@[<v>%a@]@," pp_endplay (Win O));
+  Format.printf "X : %d - O : %d@." (cnt_points board X) (cnt_points board O);
   endgame board trace
 
 let rec play (player : player) (board : board)
@@ -41,7 +42,9 @@ let rec play (player : player) (board : board)
   | Some p ->
       if check_pos board p then
         let to_change = move board (Some player) p in
-        if List.length to_change = 1 then play player board f_player trace
+        if List.length to_change = 1 then (
+          Format.printf "Invalid move ! Try again.@.";
+          play player board f_player trace)
         else (set board player to_change, List.append trace [ p ])
       else play player board f_player trace
 
@@ -75,7 +78,8 @@ let game function_player1 function_player2 init_board =
 let player_teletype p b =
   Format.printf "@[<v>It's player %a's turn.@," pp_player (Some p);
   Format.printf "Board:  @[<v>%a@]@," pp_board b;
-
+  Format.printf "@[<v>possible moves : %a@]@," pp_poslist
+    (Verif.possible_move_list p b);
   Format.printf "Choose your move : @]@.";
   try
     Scanf.scanf "%c%d\n" (fun i j ->

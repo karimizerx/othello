@@ -34,6 +34,7 @@ val play :
   board ->
   (player -> board -> (hpos * vpos) option) ->
   trace ->
+  int ->
   board * trace
 (** plays 1 move *)
 
@@ -51,3 +52,9 @@ val player_random : player -> board -> pos option
 
 val player_giveup : player -> board -> pos option
 (** [player_giveup player board] always fails to propose a move. *)
+
+val player_invalid : player -> board -> pos option
+(** [player_invalid player board] always returns a position in the free positions, but not in the possible moves *)
+
+val player_invalid2 : player -> board -> pos option
+(** [player_invalid2 player board] always returns a position outside of the board*)

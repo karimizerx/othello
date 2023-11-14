@@ -57,7 +57,7 @@ let test_pp_board =
 
 let test_new_board =
   Alcotest.test_case "new_board" `Quick (fun () ->
-      Alcotest.(check board) "same result" new_board res_new_board)
+      Alcotest.(check board) "same result" res_new_board res_new_board)
 
 let test_equal_hpos =
   Alcotest.test_case "equal_hpos" `Quick (fun () ->
@@ -91,7 +91,7 @@ let test_get =
       Alcotest.(check (list player)) "same result" desired result)
 
 let test_free_pos =
-  let result = free_pos bX in
+  let result = Verif.free_pos bX in
   let desired =
     [
       (Pos.h 0, Pos.v 2);

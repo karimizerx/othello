@@ -3,9 +3,8 @@ open Engine
 type trace = (hpos * vpos) list
 type endplay = Win of player | Giveup of player | Draw
 
-let pp_trace fmt t = List.iter (fun p -> Format.fprintf fmt "%a " pp_pos p) t
-let equal_trace (t1 : pos list) (t2 : pos list) = t1 = t2
-(*List.equal equal_pos t1 t2*)
+(* Pretty printers *)
+let pp_trace = pp_poslist
 
 let pp_endplay fmt ep =
   match ep with
@@ -13,8 +12,13 @@ let pp_endplay fmt ep =
   | Giveup p -> Format.fprintf fmt "%a gave up :(" pp_player (Some p)
   | _ -> Format.fprintf fmt "Draw"
 
+(* Equality functions*)
+let equal_trace (t1 : pos list) (t2 : pos list) = t1 = t2
 let equal_endplay e1 e2 = e1 = e2
-let check_pos board (h, v) = List.exists (equal_pos (h, v)) (free_pos board)
+
+let check_pos board (h, v) =
+  List.exists (equal_pos (h, v)) (Verif.free_pos board)
+
 let player_function player f_p1 f_p2 = match player with X -> f_p1 | _ -> f_p2
 
 let endgame board trace =
@@ -88,10 +92,11 @@ let game function_player1 function_player2 init_board =
 (*Player's functions*)
 
 let player_teletype p b =
-  Format.printf "@[<v>It's player %a's turn.@," pp_player (Some p);
   Format.printf "Board:  @[<v>%a@]@," pp_board b;
+  Format.printf "@[<v>It's player %a's turn.@," pp_player (Some p);
   Format.printf "@[<v>Possible moves : %a@]@," pp_poslist
     (Verif.possible_move_list p b);
+
   Format.printf "Choose your move : @]@.";
   try
     Scanf.scanf "%c%d\n" (fun i j ->
@@ -117,7 +122,7 @@ let player_invalid p b =
     | pos :: tl ->
         if List.mem pos free_positions then Some pos else invalid_pos b tl
   in
-  invalid_pos b (free_pos b)
+  invalid_pos b (Verif.free_pos b)
 
 let player_invalid2 p b =
   ignore (p, b);

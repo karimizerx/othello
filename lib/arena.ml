@@ -34,8 +34,9 @@ let end_status board trace ((giveup, player) : bool * player) =
   endgame board trace
 
 let rec play (player : player) (board : board)
-    (f_player : player -> board -> (hpos * vpos) option) (trace : trace) =
+    (f_player : player -> board -> (hpos * vpos) option) (trace : trace) cpt_invalid =
   let open Engine.Verif in
+  if cpt_invalid > 5 then (board, trace) else
   let choice = f_player player board in
   match choice with
   | None -> (board, trace)
@@ -43,10 +44,12 @@ let rec play (player : player) (board : board)
       if check_pos board p then
         let to_change = move board (Some player) p in
         if List.length to_change = 1 then (
-          Format.printf "Invalid move ! Try again.@.";
-          play player board f_player trace)
+          Format.printf "Invalid move ! Try again, you have %d tries left.@." (5-cpt_invalid);
+          play player board f_player trace) (cpt_invalid+1)
         else (set board player to_change, List.append trace [ p ])
-      else play player board f_player trace
+      else 
+      (Format.printf "Invalid move ! Try again, you have %d tries left.@." (5-cpt_invalid); 
+      play player board f_player trace (cpt_invalid+1))
 
 (*player 1 : X | player 2 : O*)
 let game function_player1 function_player2 init_board =
@@ -66,7 +69,7 @@ let game function_player1 function_player2 init_board =
               function_player2 )
       in
       let new_board, new_trace =
-        play current_player board current_function trace
+        play current_player board current_function trace 0
       in
       if equal_board board new_board then
         end_status board trace (true, current_player)
@@ -98,3 +101,15 @@ let player_random p b =
 let player_giveup p b =
   ignore (p, b);
   None
+
+let player_invalid p b =
+  ignore(p);
+  let rec invalid_pos b free_positions =
+    match free_positions with
+    |[] -> None
+    |pos::tl -> if List.mem pos free_positions then (Some pos) else invalid_pos b tl
+  in invalid_pos b (free_pos b)
+
+let player_invalid2 p b =
+  ignore(p,b);
+  Some (H (-1), V (-1))

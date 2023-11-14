@@ -33,7 +33,8 @@ val play :
   player ->
   board ->
   (player -> board -> (hpos * vpos) option) ->
-  trace -> int ->
+  trace ->
+  int ->
   board * trace
 (** plays 1 move *)
 

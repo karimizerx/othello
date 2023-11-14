@@ -120,7 +120,7 @@ let generator_board : board QCheck.Gen.t =
               function_player2 )
       in
       let new_board, new_trace =
-        play current_player board current_function trace
+        play current_player board current_function trace 0
       in
       if equal_board board new_board then board
       else

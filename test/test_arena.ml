@@ -46,7 +46,7 @@ let test_player_random =
                  (Pos.h 4, Pos.v 5);
                ])
             true)
-      (*Error if it returns None*)
+  (*Error if it returns None*)
   | None ->
       Alcotest.test_case "player_random" `Quick (fun () ->
           Alcotest.(check bool) "same result" true false)
@@ -68,7 +68,7 @@ let test_player_random2 =
                  (Pos.h 4, Pos.v 2);
                ])
             true)
-      (*Error if it returns None*)
+  (*Error if it returns None*)
   | None ->
       Alcotest.test_case "player_random" `Quick (fun () ->
           Alcotest.(check bool) "same result" true false)

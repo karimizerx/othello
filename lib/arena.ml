@@ -30,8 +30,12 @@ let end_status board trace ((giveup, player) : bool * player) =
      | true, true -> Format.printf "@[<v>%a@]@," pp_endplay Draw
      | true, false -> Format.printf "@[<v>%a@]@," pp_endplay (Win X)
      | _ -> Format.printf "@[<v>%a@]@," pp_endplay (Win O));
-  Format.printf "X : %d - O : %d@." (cnt_points board X) (cnt_points board O);
-  endgame board trace
+  match (cnt_points board X, cnt_points board O) with
+  | _, 0 -> Format.printf "X : 64 - O : 0@."
+  | 0, _ -> Format.printf "X : 0 - O : 64@."
+  | cnt_X, cnt_O ->
+      Format.printf "X : %d - O : %d@." cnt_X cnt_O;
+      endgame board trace
 
 let rec play (player : player) (board : board)
     (f_player : player -> board -> (hpos * vpos) option) (trace : trace)

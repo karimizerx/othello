@@ -122,11 +122,9 @@ let generator_board : board QCheck.Gen.t =
       let new_board, new_trace =
         play current_player board current_function trace 0
       in
-      if equal_board board new_board then board
-      else
-        go new_board current_player function_player1 function_player2 new_trace
+      go new_board current_player function_player1 function_player2 new_trace
   in
-  go new_board O function_player function_player []
+  go init_board O function_player function_player []
 
 let arbitrary_board =
   QCheck.make ~print:(Format.asprintf "%a" pp_board) generator_board

@@ -1,14 +1,14 @@
 open Engine
 
 type trace = (hpos * vpos) list
-(** list that keeps track of the moves done by the players until the and of the game *)
-
-val pp_trace : Format.formatter -> trace -> unit
-val equal_trace : trace -> trace -> bool
-
 type endplay = Win of player | Giveup of player | Draw
 
+(* Pretty printers *)
+val pp_trace : Format.formatter -> trace -> unit
 val pp_endplay : Format.formatter -> endplay -> unit
+
+(* Equality functions *)
+val equal_trace : trace -> trace -> bool
 val equal_endplay : endplay -> endplay -> bool
 
 val check_pos : board -> pos -> bool
@@ -22,12 +22,6 @@ val player_function :
   board ->
   pos option
 (** returns the fonction associated to the player : X : player1 / O : player2 *)
-
-val end_status : board -> trace -> bool * player -> unit
-(**prints the result of the game *)
-
-val endgame : board -> trace -> unit
-(** prints the board and the trace*)
 
 val play :
   player ->
@@ -45,7 +39,10 @@ val game :
   unit
 (** manages the game *)
 
+(* Players Functions *)
+
 val player_teletype : player -> board -> pos option
+(** [player_teletype player board] returns the position the user teletyped *)
 
 val player_random : player -> board -> pos option
 (** [player_random player board]  return a random & valid position for [player] *)

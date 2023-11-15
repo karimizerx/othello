@@ -9,36 +9,15 @@ module Pos = struct
   let v i = V i
 end
 
+exception Invalid_move
+
 (* Pretty printers *)
+
 let pp_player fmt (pl : player option) =
   match pl with
   | None -> Format.fprintf fmt "•"
   | Some X -> Format.fprintf fmt "X"
   | _ -> Format.fprintf fmt "O"
-
-let equal_hpos (H i) (H j) = i = j
-let equal_vpos (V i) (V j) = i = j
-
-let equal_pos ((x1, y1) : pos) ((x2, y2) : pos) =
-  equal_hpos x1 x2 && equal_vpos y1 y2
-
-let equal_player p1 p2 =
-  match (p1, p2) with
-  | None, None -> true
-  | Some X, Some X -> true
-  | Some O, Some O -> true
-  | Some _, None | None, Some _ -> false
-  | Some X, Some O | Some O, Some X -> false
-
-let rec equal_list_player (l1 : player option list) (l2 : player option list) =
-  match (l1, l2) with
-  | [], [] -> true
-  | _, [] -> false
-  | [], _ -> false
-  | h1 :: t1, h2 :: t2 -> equal_player h1 h2 && equal_list_player t1 t2
-
-let equal_board (b : board) (b1 : board) =
-  equal_list_player (List.flatten b) (List.flatten b1)
 
 let pp_hpos fmt n =
   match n with
@@ -77,12 +56,38 @@ let pp_board fmt board =
       Format.fprintf fmt "@,   │@,")
     board
 
-let init b =
-  assert (List.length b = 8);
-  assert (List.for_all (fun line -> List.length line = 8) b);
-  b
+(* Equality functions *)
 
-let new_board : board =
+let equal_hpos (H i) (H j) = i = j
+let equal_vpos (V i) (V j) = i = j
+
+let equal_pos ((x1, y1) : pos) ((x2, y2) : pos) =
+  equal_hpos x1 x2 && equal_vpos y1 y2
+
+let equal_player p1 p2 =
+  match (p1, p2) with
+  | None, None -> true
+  | Some X, Some X -> true
+  | Some O, Some O -> true
+  | Some _, None | None, Some _ -> false
+  | Some X, Some O | Some O, Some X -> false
+
+let rec equal_list_player (l1 : player option list) (l2 : player option list) =
+  match (l1, l2) with
+  | [], [] -> true
+  | _, [] -> false
+  | [], _ -> false
+  | h1 :: t1, h2 :: t2 -> equal_player h1 h2 && equal_list_player t1 t2
+
+let equal_board (b : board) (b1 : board) =
+  equal_list_player (List.flatten b) (List.flatten b1)
+
+let init_board : board =
+  let init b =
+    assert (List.length b = 8);
+    assert (List.for_all (fun line -> List.length line = 8) b);
+    b
+  in
   let l = List.init 3 (fun _ -> List.init 8 (fun _ -> None)) in
   let centers =
     List.init 3 (fun _ -> None)
@@ -90,10 +95,6 @@ let new_board : board =
     @ List.init 3 (fun _ -> None)
   in
   init (l @ [ centers ] @ [ List.rev centers ] @ l)
-
-exception Invalid_hpos
-exception Invalid_vpos
-exception Invalid_move
 
 let get (b : board) ((H h, V v) : pos) = List.nth (List.nth b h) v
 
@@ -109,18 +110,6 @@ let rec set (b : board) pl pos_list =
              else line)
            b)
         pl tl
-
-let free_pos b : pos list =
-  let copy_b = List.append [] b in
-  let listofpos =
-    List.concat
-      (List.mapi
-         (fun i line -> List.mapi (fun j _ -> (Pos.h i, Pos.v j)) line)
-         copy_b)
-  in
-  List.filter
-    (fun pos -> match get b pos with None -> true | _ -> false)
-    listofpos
 
 let swap_player = function X -> O | O -> X
 let swap_player_opt = function None -> None | Some p -> Some (swap_player p)
@@ -193,6 +182,18 @@ module Verif = struct
         move_in b pl pos (dir + 1) (l_pos @ new_l)
     in
     move_in b pl pos 0 [ pos ]
+
+  let free_pos b : pos list =
+    let copy_b = List.append [] b in
+    let listofpos =
+      List.concat
+        (List.mapi
+           (fun i line -> List.mapi (fun j _ -> (Pos.h i, Pos.v j)) line)
+           copy_b)
+    in
+    List.filter
+      (fun pos -> match get b pos with None -> true | _ -> false)
+      listofpos
 
   let possible_move_list p b =
     let rec possible_move_list_aux p b l free_pos =

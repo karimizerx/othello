@@ -38,7 +38,7 @@ let test_player_random =
           Alcotest.(check bool)
             "same result"
             (List.exists
-               (fun p -> if equal_pos p position then true else false)
+               (fun p -> if equal_pos p position then true else false) (* if X then true else false is the exact same as calling X*)
                [
                  (Pos.h 2, Pos.v 3);
                  (Pos.h 3, Pos.v 2);
@@ -60,7 +60,7 @@ let test_player_random2 =
           Alcotest.(check bool)
             "same result"
             (List.exists
-               (fun p -> if equal_pos p position then true else false)
+               (fun p -> if equal_pos p position then true else false) 
                [
                  (Pos.h 5, Pos.v 3);
                  (Pos.h 3, Pos.v 5);

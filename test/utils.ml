@@ -116,6 +116,18 @@ let beq =
     [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
   ]
 
+let end_match = 
+  [
+    [ Some X; Some X; None; None; Some X; Some X; None; None ];
+    [ Some X; None; None; None; Some X; Some X; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; Some O; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
 (* Pretty printer for (pos option)'s tests. *)
 let pp_pos_opt po =
   match po with None -> "" | Some p -> Format.asprintf "%a" pp_pos p

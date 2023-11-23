@@ -63,14 +63,34 @@ let test_equal_hpos =
   Alcotest.test_case "equal_hpos" `Quick (fun () ->
       Alcotest.(check bool) "same result" (equal_hpos (H 2) (H 2)) true)
 
+let test_equal_hpos_gen =
+  let open QCheck in 
+  Test.make ~count:1000 ~name:"equal hpos multiple runs"
+  (pair small_int small_int) (fun (h1, h2) ->
+    (equal_hpos (H h1) (H h2)) = (h1 = h2) 
+  )
+
 let test_equal_vpos =
   Alcotest.test_case "equal_vpos" `Quick (fun () ->
       Alcotest.(check bool) "same result" (equal_vpos (V 2) (V 8)) false)
+
+let test_equal_vpos_gen =
+  let open QCheck in 
+  Test.make ~count:1000 ~name:"equal vpos multiple runs"
+  (pair small_int small_int) (fun (v1, v2) ->
+    (equal_vpos (V v1) (V v2)) = (v1 = v2) 
+  )
 
 let test_equal_pos =
   Alcotest.test_case "equal_pos" `Quick (fun () ->
       Alcotest.(check bool) "same result" (equal_pos (H 1, V 2) (H 1, V 2)) true)
 
+let test_equal_pos_gen =
+  let open QCheck in 
+  Test.make ~count:1000 ~name:"equal pos multiple runs"
+  (quad small_int small_int small_int small_int) (fun (h1, v1, h2, v2) ->
+    (equal_pos (H h1, V v1) (H h2, V v2)) = (h1 = h2 && v1 = v2) 
+  )
 let test_set =
   let set1 = set b1 (O : player) [ (Pos.h 0, Pos.v 0) ] in
   let result = set set1 (O : player) [ (Pos.h 7, Pos.v 7) ] in
@@ -121,6 +141,11 @@ let test_win_3 =
   Alcotest.test_case "winner uniqueness (when not draw)" `Quick (fun () ->
       Alcotest.(check bool) "same result" desired result)
 
+let test_win_nonfill_board =
+  let result = Verif.win end_match X in
+  let desired = true in
+  Alcotest.test_case "players out of moves" `Quick (fun () ->
+    Alcotest.(check bool) "same result" desired result)
 let test_move1 =
   let desired =
     [
@@ -232,7 +257,7 @@ let () =
       ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
       ("possible_move_list", [ test_possible_move_list ]);
       ("can_play", [ test_can_play1; test_can_play2; test_can_play3 ]);
-      ("win", [ test_win_1; test_win_2; test_win_3 ]);
+      ("win", [ test_win_1; test_win_2; test_win_3; test_win_nonfill_board ]);
       ( "move",
         [
           test_move1;
@@ -244,5 +269,10 @@ let () =
           test_move7;
         ] );
       ("new_board", [ test_new_board ]);
-      ("equal", [ test_equal_hpos; test_equal_vpos; test_equal_pos ]);
+      ("equal", [ test_equal_hpos; 
+                  QCheck_alcotest.to_alcotest test_equal_hpos_gen;
+                  test_equal_vpos; 
+                  QCheck_alcotest.to_alcotest test_equal_vpos_gen;                
+                  test_equal_pos;
+                  QCheck_alcotest.to_alcotest test_equal_pos_gen; ]);
     ]

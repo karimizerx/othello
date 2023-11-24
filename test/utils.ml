@@ -116,6 +116,66 @@ let beq =
     [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
   ]
 
+let b4 =
+  [
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; Some X; Some O; None; None; None ];
+    [ None; None; None; Some X; Some O; None; None; None ];
+    [ None; None; None; Some O; Some O; None; None; None ];
+    [ None; None; Some O; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
+let b5 =
+  [
+    [ None; None; None; Some O; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
+let b6 =
+  [
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; Some O; None ];
+    [ None; None; None; None; None; Some O; None; None ];
+    [ None; None; None; None; Some O; None; None; None ];
+    [ None; None; None; Some O; None; None; None; None ];
+    [ None; None; Some O; None; None; None; None; None ];
+    [ None; Some O; None; None; None; None; None; None ];
+    [ Some X; None; None; None; None; None; None; None ];
+  ]
+
+let b7 =
+  [
+    [ None; None; None; None; Some X; Some O; Some O; None ];
+    [ None; None; None; None; None; None; Some O; None ];
+    [ None; None; None; None; None; Some O; None; None ];
+    [ None; None; None; None; Some O; None; None; None ];
+    [ None; None; None; Some O; None; None; None; None ];
+    [ None; None; Some O; None; None; None; None; None ];
+    [ None; Some O; None; None; None; None; None; None ];
+    [ Some X; None; None; None; None; None; None; None ];
+  ]
+
+let b8 =
+  [
+    [ None; None; None; None; Some X; Some O; Some O; None ];
+    [ None; None; None; None; None; None; Some O; Some O ];
+    [ None; None; None; None; None; Some O; None; Some O ];
+    [ None; None; None; None; Some O; None; None; Some O ];
+    [ None; None; None; Some O; None; None; None; Some O ];
+    [ None; None; Some O; None; None; None; None; Some O ];
+    [ None; Some O; None; None; None; None; None; Some O ];
+    [ Some X; None; None; None; None; None; None; Some X ];
+  ]
+
 (* Pretty printer for (pos option)'s tests. *)
 let pp_pos_opt po =
   match po with None -> "" | Some p -> Format.asprintf "%a" pp_pos p

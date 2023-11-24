@@ -240,6 +240,16 @@ let test_can_play3 =
   Alcotest.test_case "can_play" `Quick (fun () ->
       Alcotest.(check bool) "same result" false result)
 
+let oob_pos = 
+  let set_oob = 
+    (set res_new_board X [(H (-1), V 0)]) in
+  let invalid_board
+    (set res_new_board O [(H (-2), V 0)]) in
+  let pos
+  Alcotest.test_case "out of bounds position" `Quick (fun () ->
+  Alcotest.(check list pos) "same result" []
+  (set res_new_board O pos_list ))
+
 let () =
   let open Alcotest in
   run "Engine"
@@ -267,6 +277,7 @@ let () =
           test_move5;
           test_move6;
           test_move7;
+          oob_pos;
         ] );
       ("new_board", [ test_new_board ]);
       ("equal", [ test_equal_hpos; 

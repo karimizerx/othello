@@ -130,16 +130,16 @@ let end_match =
 
 let wrong_size_board =
     [  
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
-      [ Some X; None; None; None; None; None; None; Some X ];
-      [ Some O; None; None; None; None; None; None; Some O];
-      [ Some O; None; None; None; None; None; None; None ];
-      [ None; None; None; None; None; None; None; None ];
+      [ None; None; None; None; None; None; None; None ];   (*0 A*)
+      [ None; None; None; None; None; None; None; None ];   (*1 B*)
+      [ None; None; None; None; None; None; None; None ];   (*2 C*) 
+      [ None; None; None; None; None; None; None; None ];   (*3 D*)
+      [ None; None; None; None; None; None; None; None ];   (*4 E*)
+      [ None; None; None; None; None; None; None; None ];   (*5 F*)
+      [ Some X; None; None; None; None; None; None; None];  (*6 G *)
+      [ Some O; None; None; None; None; None; None; Some O];(*7 H*)
+      [ Some O; None; None; None; None; None; None; Some O];(*8 I -> Move captures this pawn but not H 7 *)
+      [ None; None; None; None; None; None; None; Some X];  (*9 J*)
     ]
 
 (* Pretty printer for (pos option)'s tests. *)

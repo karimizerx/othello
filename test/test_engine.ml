@@ -240,15 +240,11 @@ let test_can_play3 =
   Alcotest.test_case "can_play" `Quick (fun () ->
       Alcotest.(check bool) "same result" false result)
 
-let oob_pos = 
-  let set_oob = 
-    (set res_new_board X [(H (-1), V 0)]) in
-  let invalid_board
-    (set res_new_board O [(H (-2), V 0)]) in
-  let pos
-  Alcotest.test_case "out of bounds position" `Quick (fun () ->
-  Alcotest.(check list pos) "same result" []
-  (set res_new_board O pos_list ))
+let test_out_of_bounds_move =
+  let open Verif in
+  Alcotest.test_case "wrong board" `Quick (fun () -> 
+    Alcotest.(check (list (pair hpos vpos))) "same result" 
+    [] (possible_move_list X wrong_size_board))
 
 let () =
   let open Alcotest in
@@ -265,7 +261,7 @@ let () =
           test_pp_poslist;
         ] );
       ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
-      ("possible_move_list", [ test_possible_move_list ]);
+      ("possible_move_list", [ test_possible_move_list; test_out_of_bounds_move]);
       ("can_play", [ test_can_play1; test_can_play2; test_can_play3 ]);
       ("win", [ test_win_1; test_win_2; test_win_3; test_win_nonfill_board ]);
       ( "move",
@@ -277,7 +273,6 @@ let () =
           test_move5;
           test_move6;
           test_move7;
-          oob_pos;
         ] );
       ("new_board", [ test_new_board ]);
       ("equal", [ test_equal_hpos; 

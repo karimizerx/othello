@@ -128,6 +128,20 @@ let end_match =
     [ None; None; None; None; None; None; None; None ];
   ]
 
+let wrong_size_board =
+    [  
+      [ None; None; None; None; None; None; None; None ];
+      [ None; None; None; None; None; None; None; None ];
+      [ None; None; None; None; None; None; None; None ];
+      [ None; None; None; None; None; None; None; None ];
+      [ None; None; None; None; None; None; None; None ];
+      [ None; None; None; None; None; None; None; None ];
+      [ Some X; None; None; None; None; None; None; Some X ];
+      [ Some O; None; None; None; None; None; None; Some O];
+      [ Some O; None; None; None; None; None; None; None ];
+      [ None; None; None; None; None; None; None; None ];
+    ]
+
 (* Pretty printer for (pos option)'s tests. *)
 let pp_pos_opt po =
   match po with None -> "" | Some p -> Format.asprintf "%a" pp_pos p

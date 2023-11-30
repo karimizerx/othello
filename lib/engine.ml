@@ -82,6 +82,19 @@ let rec equal_list_player (l1 : player option list) (l2 : player option list) =
 let equal_board (b : board) (b1 : board) =
   equal_list_player (List.flatten b) (List.flatten b1)
 
+let correct_board board =
+  let rec aux_correct_b b acc =
+    if acc = 8 then true
+    else
+      match b with
+      | [] -> false
+      | hd :: tl ->
+          if List.length hd = 8 then aux_correct_b tl (acc + 1) else false
+  in
+  aux_correct_b board 0
+
+let correct_pos (H h, V v) = not (h < 0 || h > 7 || v < 0 || v > 7)
+
 let init_board : board =
   let init b =
     assert (List.length b = 8);
@@ -96,20 +109,26 @@ let init_board : board =
   in
   init (l @ [ centers ] @ [ List.rev centers ] @ l)
 
-let get (b : board) ((H h, V v) : pos) = List.nth (List.nth b h) v
+let get (b : board) ((H h, V v) : pos) =
+  if (not (correct_pos (H h, V v))) || not (correct_board b) then None
+  else List.nth (List.nth b h) v
 
 let rec set (b : board) pl pos_list =
-  match pos_list with
-  | [] -> b
-  | (H h, V v) :: tl ->
-      set
-        (List.mapi
-           (fun i line ->
-             if i = h then
-               List.mapi (fun j el -> if j = v then Some pl else el) line
-             else line)
-           b)
-        pl tl
+  if not (correct_board b) then b
+  else
+    match pos_list with
+    | [] -> b
+    | (H h, V v) :: tl ->
+        if not (correct_pos (H h, V v)) then b
+        else
+          set
+            (List.mapi
+               (fun i line ->
+                 if i = h then
+                   List.mapi (fun j el -> if j = v then Some pl else el) line
+                 else line)
+               b)
+            pl tl
 
 let swap_player = function X -> O | O -> X
 let swap_player_opt = function None -> None | Some p -> Some (swap_player p)
@@ -175,44 +194,54 @@ module Verif = struct
       same_player_line board (swap_player_opt player) next_pos dir [ next_pos ]
 
   let move (b : board) pl pos =
-    let rec move_in b pl pos dir l_pos =
-      if dir > 7 then l_pos
-      else
-        let new_l = move_dir b pl pos dir in
-        move_in b pl pos (dir + 1) (l_pos @ new_l)
-    in
-    move_in b pl pos 0 [ pos ]
+    if not (correct_board b) then [ pos ]
+    else
+      let rec move_in b pl pos dir l_pos =
+        if dir > 7 then l_pos
+        else
+          let new_l = move_dir b pl pos dir in
+          move_in b pl pos (dir + 1) (l_pos @ new_l)
+      in
+      move_in b pl pos 0 [ pos ]
 
   let free_pos b : pos list =
-    let copy_b = List.append [] b in
-    let listofpos =
-      List.concat
-        (List.mapi
-           (fun i line -> List.mapi (fun j _ -> (Pos.h i, Pos.v j)) line)
-           copy_b)
-    in
-    List.filter
-      (fun pos -> match get b pos with None -> true | _ -> false)
-      listofpos
+    if not (correct_board b) then []
+    else
+      let copy_b = List.append [] b in
+      let listofpos =
+        List.concat
+          (List.mapi
+             (fun i line -> List.mapi (fun j _ -> (Pos.h i, Pos.v j)) line)
+             copy_b)
+      in
+      List.filter
+        (fun pos -> match get b pos with None -> true | _ -> false)
+        listofpos
 
   let possible_move_list p b =
-    let rec possible_move_list_aux p b l free_pos =
-      match free_pos with
-      | h :: t ->
-          if List.length (move b (Some p) h) > 1 then
-            possible_move_list_aux p b (l @ [ h ]) t
-          else possible_move_list_aux p b l t
-      | [] -> l
-    in
-    possible_move_list_aux p b [] (free_pos b)
+    if not (correct_board b) then []
+    else
+      let rec possible_move_list_aux p b l free_pos =
+        match free_pos with
+        | h :: t ->
+            if List.length (move b (Some p) h) > 1 then
+              possible_move_list_aux p b (l @ [ h ]) t
+            else possible_move_list_aux p b l t
+        | [] -> l
+      in
+      possible_move_list_aux p b [] (free_pos b)
 
-  let can_play b pl = List.length (possible_move_list pl b) > 0
+  let can_play b pl =
+    if not (correct_board b) then false
+    else List.length (possible_move_list pl b) > 0
 
   let cnt_points b p =
-    b |> List.flatten
-    |> List.fold_left
-         (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
-         0
+    if not (correct_board b) then 0
+    else
+      b |> List.flatten
+      |> List.fold_left
+           (fun i cp -> match cp with Some x when p = x -> i + 1 | _ -> i)
+           0
 
   let win b p =
     if can_play b p || can_play b (swap_player p) then false

@@ -176,6 +176,30 @@ let b8 =
     [ Some X; None; None; None; None; None; None; Some X ];
   ]
 
+let b9 =
+  [
+    [ None; Some X; None; None; Some X; None; None; Some X ];
+    [ None; None; Some O; None; Some O; None; Some O; None ];
+    [ None; None; None; Some O; Some O; Some O; None; None ];
+    [ Some X; Some O; Some O; Some O; None; Some O; Some O; Some X ];
+    [ None; None; None; Some O; Some O; Some O; None; None ];
+    [ None; None; Some O; None; Some O; None; Some O; None ];
+    [ None; Some O; None; None; Some O; None; None; Some X ];
+    [ Some X; None; None; None; Some X; None; None; None ];
+  ]
+
+let bO =
+  [
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; Some O; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
 (* Pretty printer for (pos option)'s tests. *)
 let pp_pos_opt po =
   match po with None -> "" | Some p -> Format.asprintf "%a" pp_pos p

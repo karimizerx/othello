@@ -29,6 +29,11 @@ let test_check_pos_3 =
   Alcotest.test_case "check_pos_3" `Quick (fun () ->
       Alcotest.(check bool) "same result" false result)
 
+let test_check_pos_qchek =
+  let open QCheck in
+  Test.make ~count:100 ~name:"test check_pos" (pair small_int small_int)
+    (fun i -> check_pos res_new_board (H (fst i + 20), V (snd i - 20)) = false)
+
 let test_player_random =
   let result = player_random X res_new_board in
   match result with
@@ -140,6 +145,7 @@ let () =
     [
       ("pp", [ test_pp_trace; test_pp_endplay ]);
       ("check pos", [ test_check_pos_1; test_check_pos_2; test_check_pos_3 ]);
+      ("check pos qcheck", [ QCheck_alcotest.to_alcotest test_check_pos_qchek ]);
       ( "player",
         [
           test_player_random;

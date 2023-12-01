@@ -83,15 +83,7 @@ let equal_board (b : board) (b1 : board) =
   equal_list_player (List.flatten b) (List.flatten b1)
 
 let correct_board board =
-  let rec aux_correct_b b acc =
-    if acc = 8 then true
-    else
-      match b with
-      | [] -> false
-      | hd :: tl ->
-          if List.length hd = 8 then aux_correct_b tl (acc + 1) else false
-  in
-  aux_correct_b board 0
+  List.length board = 8 && List.for_all (fun l -> List.length l = 8) board
 
 let correct_pos (H h, V v) = not (h < 0 || h > 7 || v < 0 || v > 7)
 

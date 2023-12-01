@@ -72,12 +72,8 @@ let equal_player p1 p2 =
   | Some _, None | None, Some _ -> false
   | Some X, Some O | Some O, Some X -> false
 
-let rec equal_list_player (l1 : player option list) (l2 : player option list) =
-  match (l1, l2) with
-  | [], [] -> true
-  | _, [] -> false
-  | [], _ -> false
-  | h1 :: t1, h2 :: t2 -> equal_player h1 h2 && equal_list_player t1 t2
+let equal_list_player (l1 : player option list) (l2 : player option list) =
+  List.equal equal_player l1 l2
 
 let equal_board (b : board) (b1 : board) =
   equal_list_player (List.flatten b) (List.flatten b1)
@@ -186,7 +182,7 @@ module Verif = struct
       same_player_line board (swap_player_opt player) next_pos dir [ next_pos ]
 
   let move (b : board) pl pos =
-    if not (correct_board b) then [ pos ]
+    if (not (correct_board b)) || pl = None then [ pos ]
     else
       let rec move_in b pl pos dir l_pos =
         if dir > 7 then l_pos

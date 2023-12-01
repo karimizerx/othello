@@ -35,7 +35,6 @@ val play :
 val game :
   (player -> board -> (hpos * vpos) option) ->
   (player -> board -> (hpos * vpos) option) ->
-  board ->
   unit
 (** manages the game *)
 

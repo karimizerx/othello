@@ -107,30 +107,30 @@ let player_teletype p b =
 
 let player_random p b =
   if not (Engine.correct_board b) then None
-  else (
-  let open Verif in
-  let list_of_move = possible_move_list p b in
-  if List.length list_of_move > 0 then
-    Some (List.nth list_of_move (Random.int (List.length list_of_move)))
-  else None)
+  else
+    let open Verif in
+    let list_of_move = possible_move_list p b in
+    if List.length list_of_move > 0 then
+      Some (List.nth list_of_move (Random.int (List.length list_of_move)))
+    else None
 
 let player_giveup p b =
   if not (Engine.correct_board b) then None
   else (
-  ignore (p, b);
-  None)
+    ignore (p, b);
+    None)
 
 let player_invalid p b =
   if not (Engine.correct_board b) then None
   else (
-  ignore p;
-  let rec invalid_pos b free_positions =
-    match free_positions with
-    | [] -> None
-    | pos :: tl ->
-        if List.mem pos free_positions then Some pos else invalid_pos b tl
-  in
-  invalid_pos b (Verif.free_pos b))
+    ignore p;
+    let rec invalid_pos b free_positions =
+      match free_positions with
+      | [] -> None
+      | pos :: tl ->
+          if List.mem pos free_positions then Some pos else invalid_pos b tl
+    in
+    invalid_pos b (Verif.free_pos b))
 
 let player_invalid2 p b =
   ignore (p, b);

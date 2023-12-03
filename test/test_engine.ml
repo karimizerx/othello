@@ -341,12 +341,14 @@ let test_can_play3 =
   Alcotest.test_case "can_play" `Quick (fun () ->
       Alcotest.(check bool) "same result" false result)
 
+let test_board () =
+  Alcotest.(check bool)
+    "test_board" true
+    (let listX = List.init 4 (Fun.const (Some X)) in
+     let listlistX = List.init 4 (Fun.const listX) in
+     let t = get listlistX (Pos.h 0, Pos.v 0) in
+     t = None)
 
-let test_board () = Alcotest.(check unit) "tset_board" () (
-  let board = [[]] in 
-  let _ = get board (Pos.h 0, Pos.v 0) in
-  ()
-)
 let test_can_play_qcheck =
   let open QCheck in
   Test.make ~count:100 ~name:"test can_play qcheck" bool (fun b ->
@@ -356,10 +358,7 @@ let () =
   let open Alcotest in
   run "Engine"
     [
-      ("Board", [
-        test_case "board" `Quick test_board;
-      ]);
-      
+      ("Board", [ test_case "board" `Quick test_board ]);
       ( "pp",
         [
           test_pp_player1;

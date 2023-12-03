@@ -280,6 +280,35 @@ let test_move_a6 =
   Alcotest.test_case "move b8" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
+let test_move_a7 =
+  let desired =
+    [
+      (Pos.h 3, Pos.v 4);
+      (Pos.h 3, Pos.v 3);
+      (Pos.h 3, Pos.v 2);
+      (Pos.h 3, Pos.v 1);
+      (Pos.h 2, Pos.v 3);
+      (Pos.h 1, Pos.v 2);
+      (Pos.h 2, Pos.v 4);
+      (Pos.h 1, Pos.v 4);
+      (Pos.h 2, Pos.v 5);
+      (Pos.h 1, Pos.v 6);
+      (Pos.h 3, Pos.v 5);
+      (Pos.h 3, Pos.v 6);
+      (Pos.h 4, Pos.v 5);
+      (Pos.h 5, Pos.v 6);
+      (Pos.h 4, Pos.v 4);
+      (Pos.h 5, Pos.v 4);
+      (Pos.h 6, Pos.v 4);
+      (Pos.h 4, Pos.v 3);
+      (Pos.h 5, Pos.v 2);
+      (Pos.h 6, Pos.v 1);
+    ]
+  in
+  let result = Verif.move b9 (Some X) (Pos.h 3, Pos.v 4) in
+  Alcotest.test_case "move b9" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
 let test_possible_move_list =
   let open Verif in
   let result = possible_move_list X res_new_board in
@@ -318,6 +347,10 @@ let test_board () = Alcotest.(check unit) "tset_board" () (
   let _ = get board (Pos.h 0, Pos.v 0) in
   ()
 )
+let test_can_play_qcheck =
+  let open QCheck in
+  Test.make ~count:100 ~name:"test can_play qcheck" bool (fun b ->
+      if b then not (Verif.can_play bO O) else not (Verif.can_play bO X))
 
 let () =
   let open Alcotest in
@@ -340,6 +373,7 @@ let () =
       ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
       ("possible_move_list", [ test_possible_move_list ]);
       ("can_play", [ test_can_play1; test_can_play2; test_can_play3 ]);
+      ("can_play qcheck", [ QCheck_alcotest.to_alcotest test_can_play_qcheck ]);
       ("win", [ test_win_1; test_win_2; test_win_3 ]);
       ( "move",
         [
@@ -356,6 +390,7 @@ let () =
           test_move_a4;
           test_move_a5;
           test_move_a6;
+          test_move_a7;
         ] );
       ("new_board", [ test_new_board ]);
       ( "equal",

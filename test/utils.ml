@@ -116,6 +116,90 @@ let beq =
     [ Some X; Some X; Some X; Some X; Some O; Some O; Some O; Some O ];
   ]
 
+let b4 =
+  [
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; Some X; Some O; None; None; None ];
+    [ None; None; None; Some X; Some O; None; None; None ];
+    [ None; None; None; Some O; Some O; None; None; None ];
+    [ None; None; Some O; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
+let b5 =
+  [
+    [ None; None; None; Some O; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; Some X; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
+let b6 =
+  [
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; Some O; None ];
+    [ None; None; None; None; None; Some O; None; None ];
+    [ None; None; None; None; Some O; None; None; None ];
+    [ None; None; None; Some O; None; None; None; None ];
+    [ None; None; Some O; None; None; None; None; None ];
+    [ None; Some O; None; None; None; None; None; None ];
+    [ Some X; None; None; None; None; None; None; None ];
+  ]
+
+let b7 =
+  [
+    [ None; None; None; None; Some X; Some O; Some O; None ];
+    [ None; None; None; None; None; None; Some O; None ];
+    [ None; None; None; None; None; Some O; None; None ];
+    [ None; None; None; None; Some O; None; None; None ];
+    [ None; None; None; Some O; None; None; None; None ];
+    [ None; None; Some O; None; None; None; None; None ];
+    [ None; Some O; None; None; None; None; None; None ];
+    [ Some X; None; None; None; None; None; None; None ];
+  ]
+
+let b8 =
+  [
+    [ None; None; None; None; Some X; Some O; Some O; None ];
+    [ None; None; None; None; None; None; Some O; Some O ];
+    [ None; None; None; None; None; Some O; None; Some O ];
+    [ None; None; None; None; Some O; None; None; Some O ];
+    [ None; None; None; Some O; None; None; None; Some O ];
+    [ None; None; Some O; None; None; None; None; Some O ];
+    [ None; Some O; None; None; None; None; None; Some O ];
+    [ Some X; None; None; None; None; None; None; Some X ];
+  ]
+
+let b9 =
+  [
+    [ None; Some X; None; None; Some X; None; None; Some X ];
+    [ None; None; Some O; None; Some O; None; Some O; None ];
+    [ None; None; None; Some O; Some O; Some O; None; None ];
+    [ Some X; Some O; Some O; Some O; None; Some O; Some O; Some X ];
+    [ None; None; None; Some O; Some O; Some O; None; None ];
+    [ None; None; Some O; None; Some O; None; Some O; None ];
+    [ None; Some O; None; None; Some O; None; None; Some X ];
+    [ Some X; None; None; None; Some X; None; None; None ];
+  ]
+
+let bO =
+  [
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; Some O; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+  ]
+
 let end_match = 
   [
     [ Some X; Some X; None; None; Some X; Some X; None; None ];

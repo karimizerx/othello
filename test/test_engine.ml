@@ -91,6 +91,17 @@ let test_equal_pos_gen =
   (quad small_int small_int small_int small_int) (fun (h1, v1, h2, v2) ->
     (equal_pos (H h1, V v1) (H h2, V v2)) = (h1 = h2 && v1 = v2) 
   )
+let test_equal_board =
+  Alcotest.test_case "equal_board" `Quick (fun () ->
+      Alcotest.(check bool) "same result" (equal_board b0 b1) false)
+
+let test_init_board =
+  Alcotest.test_case "init" `Quick (fun () ->
+      Alcotest.(check bool)
+        "same result"
+        (equal_board init_board res_new_board)
+        true)
+
 let test_set =
   let set1 = set b1 (O : player) [ (Pos.h 0, Pos.v 0) ] in
   let result = set set1 (O : player) [ (Pos.h 7, Pos.v 7) ] in
@@ -208,6 +219,121 @@ let test_move7 =
   Alcotest.test_case "move" `Quick (fun () ->
       Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
 
+let test_move_a1 =
+  let desired = [ (Pos.h 1, Pos.v 5); (Pos.h 2, Pos.v 4) ] in
+  let result = Verif.move b4 (Some X) (Pos.h 1, Pos.v 5) in
+  Alcotest.test_case "1-move b4" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move_a2 =
+  let desired = [ (Pos.h 5, Pos.v 5); (Pos.h 4, Pos.v 4) ] in
+  let result = Verif.move b4 (Some X) (Pos.h 5, Pos.v 5) in
+  Alcotest.test_case "2-move b4" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move_a3 =
+  let desired =
+    [
+      (Pos.h 7, Pos.v 3);
+      (Pos.h 6, Pos.v 3);
+      (Pos.h 5, Pos.v 3);
+      (Pos.h 4, Pos.v 3);
+      (Pos.h 3, Pos.v 3);
+      (Pos.h 2, Pos.v 3);
+      (Pos.h 1, Pos.v 3);
+    ]
+  in
+  let result = Verif.move b5 (Some O) (Pos.h 7, Pos.v 3) in
+  Alcotest.test_case "move b5" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move_a4 =
+  let desired =
+    [
+      (Pos.h 0, Pos.v 7);
+      (Pos.h 1, Pos.v 6);
+      (Pos.h 2, Pos.v 5);
+      (Pos.h 3, Pos.v 4);
+      (Pos.h 4, Pos.v 3);
+      (Pos.h 5, Pos.v 2);
+      (Pos.h 6, Pos.v 1);
+    ]
+  in
+  let result = Verif.move b6 (Some X) (Pos.h 0, Pos.v 7) in
+  Alcotest.test_case "move b6" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move_a5 =
+  let desired =
+    [
+      (Pos.h 0, Pos.v 7);
+      (Pos.h 0, Pos.v 6);
+      (Pos.h 0, Pos.v 5);
+      (Pos.h 1, Pos.v 6);
+      (Pos.h 2, Pos.v 5);
+      (Pos.h 3, Pos.v 4);
+      (Pos.h 4, Pos.v 3);
+      (Pos.h 5, Pos.v 2);
+      (Pos.h 6, Pos.v 1);
+    ]
+  in
+  let result = Verif.move b7 (Some X) (Pos.h 0, Pos.v 7) in
+  Alcotest.test_case "move b7" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move_a6 =
+  let desired =
+    [
+      (Pos.h 0, Pos.v 7);
+      (Pos.h 0, Pos.v 6);
+      (Pos.h 0, Pos.v 5);
+      (Pos.h 1, Pos.v 7);
+      (Pos.h 2, Pos.v 7);
+      (Pos.h 3, Pos.v 7);
+      (Pos.h 4, Pos.v 7);
+      (Pos.h 5, Pos.v 7);
+      (Pos.h 6, Pos.v 7);
+      (Pos.h 1, Pos.v 6);
+      (Pos.h 2, Pos.v 5);
+      (Pos.h 3, Pos.v 4);
+      (Pos.h 4, Pos.v 3);
+      (Pos.h 5, Pos.v 2);
+      (Pos.h 6, Pos.v 1);
+    ]
+  in
+  let result = Verif.move b8 (Some X) (Pos.h 0, Pos.v 7) in
+  Alcotest.test_case "move b8" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
+let test_move_a7 =
+  let desired =
+    [
+      (Pos.h 3, Pos.v 4);
+      (Pos.h 3, Pos.v 3);
+      (Pos.h 3, Pos.v 2);
+      (Pos.h 3, Pos.v 1);
+      (Pos.h 2, Pos.v 3);
+      (Pos.h 1, Pos.v 2);
+      (Pos.h 2, Pos.v 4);
+      (Pos.h 1, Pos.v 4);
+      (Pos.h 2, Pos.v 5);
+      (Pos.h 1, Pos.v 6);
+      (Pos.h 3, Pos.v 5);
+      (Pos.h 3, Pos.v 6);
+      (Pos.h 4, Pos.v 5);
+      (Pos.h 5, Pos.v 6);
+      (Pos.h 4, Pos.v 4);
+      (Pos.h 5, Pos.v 4);
+      (Pos.h 6, Pos.v 4);
+      (Pos.h 4, Pos.v 3);
+      (Pos.h 5, Pos.v 2);
+      (Pos.h 6, Pos.v 1);
+    ]
+  in
+  let result = Verif.move b9 (Some X) (Pos.h 3, Pos.v 4) in
+  Alcotest.test_case "move b9" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos))) "same result" desired result)
+
 let test_possible_move_list =
   let open Verif in
   let result = possible_move_list X res_new_board in
@@ -240,6 +366,19 @@ let test_can_play3 =
   Alcotest.test_case "can_play" `Quick (fun () ->
       Alcotest.(check bool) "same result" false result)
 
+let test_board () =
+  Alcotest.(check bool)
+    "test_board" true
+    (let listX = List.init 4 (Fun.const (Some X)) in
+     let listlistX = List.init 4 (Fun.const listX) in
+     let t = get listlistX (Pos.h 0, Pos.v 0) in
+     t = None)
+
+let test_can_play_qcheck =
+  let open QCheck in
+  Test.make ~count:100 ~name:"test can_play qcheck" bool (fun b ->
+      if b then not (Verif.can_play bO O) else not (Verif.can_play bO X))
+
 let test_out_of_bounds_move =
   let open Verif in
   Alcotest.test_case "wrong board" `Quick (fun () -> 
@@ -250,13 +389,14 @@ let test_out_of_bounds_valid_move =
   let open Verif in
   Alcotest.test_case "wrong board" `Quick (fun () -> 
     Alcotest.(check (list (pair hpos vpos))) "same result" 
-    [] (move wrong_size_board (Some X) (H 6, V 7)))
+    [(H 6, V 7)] (move wrong_size_board (Some X) (H 6, V 7)))
     
 
 let () =
   let open Alcotest in
   run "Engine"
     [
+      ("Board", [ test_case "board" `Quick test_board ]);
       ( "pp",
         [
           test_pp_player1;
@@ -270,6 +410,7 @@ let () =
       ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
       ("possible_move_list", [ test_possible_move_list; test_out_of_bounds_move]);
       ("can_play", [ test_can_play1; test_can_play2; test_can_play3; ]);
+      ("can_play qcheck", [ QCheck_alcotest.to_alcotest test_can_play_qcheck ]);
       ("win", [ test_win_1; test_win_2; test_win_3; test_win_nonfill_board ]);
       ( "move",
         [
@@ -280,13 +421,23 @@ let () =
           test_move5;
           test_move6;
           test_move7;
+          test_move_a1;
+          test_move_a2;
+          test_move_a3;
+          test_move_a4;
+          test_move_a5;
+          test_move_a6;
+          test_move_a7;
           test_out_of_bounds_valid_move; 
         ] );
       ("new_board", [ test_new_board ]);
-      ("equal", [ test_equal_hpos; 
+      ( "equal",
+        [ test_equal_hpos; 
                   QCheck_alcotest.to_alcotest test_equal_hpos_gen;
                   test_equal_vpos; 
                   QCheck_alcotest.to_alcotest test_equal_vpos_gen;                
                   test_equal_pos;
-                  QCheck_alcotest.to_alcotest test_equal_pos_gen; ]);
+                  QCheck_alcotest.to_alcotest test_equal_pos_gen; test_equal_board ]
+      );
+      ("init", [ test_init_board ]);
     ]

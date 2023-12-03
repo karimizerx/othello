@@ -22,6 +22,10 @@ val pp_pos : Format.formatter -> pos -> unit
 val pp_poslist : Format.formatter -> pos list -> unit
 val pp_board : Format.formatter -> board -> unit
 
+(* Verif of the elements *)
+
+val correct_board : board -> bool
+
 (* Equality functions *)
 
 val equal_player : player option -> player option -> bool

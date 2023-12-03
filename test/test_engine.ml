@@ -64,33 +64,31 @@ let test_equal_hpos =
       Alcotest.(check bool) "same result" (equal_hpos (H 2) (H 2)) true)
 
 let test_equal_hpos_gen =
-  let open QCheck in 
+  let open QCheck in
   Test.make ~count:1000 ~name:"equal hpos multiple runs"
-  (pair small_int small_int) (fun (h1, h2) ->
-    (equal_hpos (H h1) (H h2)) = (h1 = h2) 
-  )
+    (pair small_int small_int) (fun (h1, h2) ->
+      equal_hpos (H h1) (H h2) = (h1 = h2))
 
 let test_equal_vpos =
   Alcotest.test_case "equal_vpos" `Quick (fun () ->
       Alcotest.(check bool) "same result" (equal_vpos (V 2) (V 8)) false)
 
 let test_equal_vpos_gen =
-  let open QCheck in 
+  let open QCheck in
   Test.make ~count:1000 ~name:"equal vpos multiple runs"
-  (pair small_int small_int) (fun (v1, v2) ->
-    (equal_vpos (V v1) (V v2)) = (v1 = v2) 
-  )
+    (pair small_int small_int) (fun (v1, v2) ->
+      equal_vpos (V v1) (V v2) = (v1 = v2))
 
 let test_equal_pos =
   Alcotest.test_case "equal_pos" `Quick (fun () ->
       Alcotest.(check bool) "same result" (equal_pos (H 1, V 2) (H 1, V 2)) true)
 
 let test_equal_pos_gen =
-  let open QCheck in 
+  let open QCheck in
   Test.make ~count:1000 ~name:"equal pos multiple runs"
-  (quad small_int small_int small_int small_int) (fun (h1, v1, h2, v2) ->
-    (equal_pos (H h1, V v1) (H h2, V v2)) = (h1 = h2 && v1 = v2) 
-  )
+    (quad small_int small_int small_int small_int) (fun (h1, v1, h2, v2) ->
+      equal_pos (H h1, V v1) (H h2, V v2) = (h1 = h2 && v1 = v2))
+
 let test_equal_board =
   Alcotest.test_case "equal_board" `Quick (fun () ->
       Alcotest.(check bool) "same result" (equal_board b0 b1) false)
@@ -156,7 +154,8 @@ let test_win_nonfill_board =
   let result = Verif.win end_match X in
   let desired = true in
   Alcotest.test_case "players out of moves" `Quick (fun () ->
-    Alcotest.(check bool) "same result" desired result)
+      Alcotest.(check bool) "same result" desired result)
+
 let test_move1 =
   let desired =
     [
@@ -381,16 +380,18 @@ let test_can_play_qcheck =
 
 let test_out_of_bounds_move =
   let open Verif in
-  Alcotest.test_case "wrong board" `Quick (fun () -> 
-    Alcotest.(check (list (pair hpos vpos))) "same result" 
-    [] (possible_move_list X wrong_size_board))
+  Alcotest.test_case "wrong board" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos)))
+        "same result" []
+        (possible_move_list X wrong_size_board))
 
 let test_out_of_bounds_valid_move =
   let open Verif in
-  Alcotest.test_case "wrong board" `Quick (fun () -> 
-    Alcotest.(check (list (pair hpos vpos))) "same result" 
-    [(H 6, V 7)] (move wrong_size_board (Some X) (H 6, V 7)))
-    
+  Alcotest.test_case "wrong board" `Quick (fun () ->
+      Alcotest.(check (list (pair hpos vpos)))
+        "same result"
+        [ (H 6, V 7) ]
+        (move wrong_size_board (Some X) (H 6, V 7)))
 
 let () =
   let open Alcotest in
@@ -408,8 +409,9 @@ let () =
           test_pp_poslist;
         ] );
       ("get, set & free_pos", [ test_set; test_get; test_free_pos ]);
-      ("possible_move_list", [ test_possible_move_list; test_out_of_bounds_move]);
-      ("can_play", [ test_can_play1; test_can_play2; test_can_play3; ]);
+      ( "possible_move_list",
+        [ test_possible_move_list; test_out_of_bounds_move ] );
+      ("can_play", [ test_can_play1; test_can_play2; test_can_play3 ]);
       ("can_play qcheck", [ QCheck_alcotest.to_alcotest test_can_play_qcheck ]);
       ("win", [ test_win_1; test_win_2; test_win_3; test_win_nonfill_board ]);
       ( "move",
@@ -428,16 +430,18 @@ let () =
           test_move_a5;
           test_move_a6;
           test_move_a7;
-          test_out_of_bounds_valid_move; 
+          test_out_of_bounds_valid_move;
         ] );
       ("new_board", [ test_new_board ]);
       ( "equal",
-        [ test_equal_hpos; 
-                  QCheck_alcotest.to_alcotest test_equal_hpos_gen;
-                  test_equal_vpos; 
-                  QCheck_alcotest.to_alcotest test_equal_vpos_gen;                
-                  test_equal_pos;
-                  QCheck_alcotest.to_alcotest test_equal_pos_gen; test_equal_board ]
-      );
+        [
+          test_equal_hpos;
+          QCheck_alcotest.to_alcotest test_equal_hpos_gen;
+          test_equal_vpos;
+          QCheck_alcotest.to_alcotest test_equal_vpos_gen;
+          test_equal_pos;
+          QCheck_alcotest.to_alcotest test_equal_pos_gen;
+          test_equal_board;
+        ] );
       ("init", [ test_init_board ]);
     ]

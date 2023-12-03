@@ -200,7 +200,7 @@ let bO =
     [ None; None; None; None; None; None; None; None ];
   ]
 
-let end_match = 
+let end_match =
   [
     [ Some X; Some X; None; None; Some X; Some X; None; None ];
     [ Some X; None; None; None; Some X; Some X; None; None ];
@@ -213,18 +213,18 @@ let end_match =
   ]
 
 let wrong_size_board =
-    [  
-      [ None; None; None; None; None; None; None; None ];   
-      [ None; None; None; None; None; None; None; None ];   
-      [ None; None; None; None; None; None; None; None ];  
-      [ None; None; None; None; None; None; None; None ];   
-      [ None; None; None; None; None; None; None; None ];   
-      [ None; None; None; None; None; None; None; None ];   
-      [ Some X; None; None; None; None; None; None; None];  
-      [ Some O; None; None; None; None; None; None; Some O];
-      [ Some O; None; None; None; None; None; None; Some O];
-      [ None; None; None; None; None; None; None; Some X];  
-    ]
+  [
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ None; None; None; None; None; None; None; None ];
+    [ Some X; None; None; None; None; None; None; None ];
+    [ Some O; None; None; None; None; None; None; Some O ];
+    [ Some O; None; None; None; None; None; None; Some O ];
+    [ None; None; None; None; None; None; None; Some X ];
+  ]
 
 (* Pretty printer for (pos option)'s tests. *)
 let pp_pos_opt po =

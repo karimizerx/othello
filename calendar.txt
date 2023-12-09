@@ -1,9 +1,0 @@
-Calendrirer du projet 
-2023-10-19: project implementation (1)
-2023-10-26: project implementation (2)
-2023-11-09: project implementation (3)
-2023-11-16: API presentations
-2023-11-23: red teams (1)
-2023-11-30: red teams (2)
-2023-12-07: automated players (1)
-2023-12-14: automated players (2)
